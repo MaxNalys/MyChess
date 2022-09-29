@@ -3,12 +3,16 @@ import java.util.HashMap;
 
 public class Board {
     private final Piece[][] board;
+
+    // TODO https://www.baeldung.com/java-initialize-hashmap
     public HashMap<Character, Integer> map = new HashMap<>();
+
     public static final String WHITE_BOLD_BRIGHT = "\033[1;97m"; // WHITE
     public static final String BLACK_BOLD_BRIGHT = "\033[1;90m"; // BLACK
     public static final String MAGENTA = "\033[0;35m";
 
     Board() {
+        // TODO: add const variable
         this.board = new Piece[8][8];
         setHashMap();
     }
@@ -30,6 +34,7 @@ public class Board {
         map.put('h', 0);
     }
 
+    // TODO redundant method
     public HashMap<Character, Integer> getMap() {
         return map;
     }
@@ -62,7 +67,7 @@ public class Board {
         return board[x][y];
     }
 
-
+    // TODO formatting
     public void placePiece(Piece piece, int x, int y) {
         board[x][y] = piece;
     }
@@ -72,6 +77,7 @@ public class Board {
         int startY = map.get(move.charAt(0));
         int x = Character.getNumericValue(move.charAt(4)) - 1;
         int y = map.get(move.charAt(3));
+
         board[x][y] = getPiece(startX, startY);
         deletePiece(startX, startY);
     }
@@ -80,7 +86,7 @@ public class Board {
         board[x][y] = null;
     }
 
-
+    //TODO naming
     public boolean entranceOfBoard(String move) {
         int x = Character.getNumericValue(move.charAt(4)) - 1;
         int y = map.get(move.charAt(3));

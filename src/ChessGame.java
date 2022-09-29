@@ -49,6 +49,8 @@ public class ChessGame {
         this.addPawn(false, 6, 5);
         this.addPawn(false, 6, 6);
         this.addPawn(false, 6, 7);
+
+        // TODO why different?
         board.placePiece(whiteKing, 0, 3);
         board.placePiece(blackKing, 7, 3);
     }
@@ -86,7 +88,7 @@ public class ChessGame {
         moveTo("e2-e4");
         moveTo("e7-e5");
 
-
+        // TODO add cycle here
 
         board.printBoard();
     }

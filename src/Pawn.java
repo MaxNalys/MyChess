@@ -1,4 +1,6 @@
+
 public class Pawn extends Piece {
+    // TODO why not use parent class for this??
     String name;
 
     Pawn(Board board, boolean white) {
@@ -48,6 +50,7 @@ public class Pawn extends Piece {
         return false;
     }
 
+    // TODO WTF
 
 
 

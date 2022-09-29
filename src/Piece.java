@@ -1,7 +1,10 @@
 public abstract class Piece {
     private boolean isWhite;
 
+    // TODO remove!
     protected Board board;
+
+    // TODO pawn specific?
     protected boolean hasMoved;
 
 
@@ -17,6 +20,7 @@ public abstract class Piece {
         return board;
     }
 
+    // TODO naming
     public boolean isHasMoved() {
         return hasMoved;
     }
@@ -31,7 +35,9 @@ public abstract class Piece {
 
     public abstract void moveTo(String move);
 
+    // TODO naming
     public boolean canMoveGenerics(String move) {
+        // TODO move this out + use Exceptions
         if (board.entranceOfBoard(move)) {
             if (board.isEmptyPosition(move)) {
                 return true;
@@ -48,6 +54,7 @@ public abstract class Piece {
         int yFinish = 1;
         //e2-e4
 
+        // TODO use separate class Utils
         int currX = Character.getNumericValue(move.charAt(1)) - 1;
         int currY = board.map.get(move.charAt(0));
         int x = Character.getNumericValue(move.charAt(4)) - 1;
