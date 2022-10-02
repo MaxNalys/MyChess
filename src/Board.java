@@ -1,49 +1,27 @@
 
-import java.util.HashMap;
+import piece.Piece;
 
 public class Board {
     private final Piece[][] board;
-
-    // TODO https://www.baeldung.com/java-initialize-hashmap
-    public HashMap<Character, Integer> map = new HashMap<>();
+    static final int PIECE_BOARD_SIZE = 8;
 
     public static final String WHITE_BOLD_BRIGHT = "\033[1;97m"; // WHITE
     public static final String BLACK_BOLD_BRIGHT = "\033[1;90m"; // BLACK
     public static final String MAGENTA = "\033[0;35m";
 
     Board() {
-        // TODO: add const variable
-        this.board = new Piece[8][8];
-        setHashMap();
+        this.board = new Piece[PIECE_BOARD_SIZE][PIECE_BOARD_SIZE];
     }
-
 
     public Piece[][] getBoard() {
         return board;
     }
 
-
-    public void setHashMap() {
-        map.put('a', 7);
-        map.put('b', 6);
-        map.put('c', 5);
-        map.put('d', 4);
-        map.put('e', 3);
-        map.put('f', 2);
-        map.put('g', 1);
-        map.put('h', 0);
-    }
-
-    // TODO redundant method
-    public HashMap<Character, Integer> getMap() {
-        return map;
-    }
-
     public void printBoard() {
         int count;
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < PIECE_BOARD_SIZE; i++) {
             count = i;
-            for (int j = 0; j < 8; j++) {
+            for (int j = 0; j < PIECE_BOARD_SIZE; j++) {
                 if (j == 0) {
                     System.out.print(WHITE_BOLD_BRIGHT + (++count));
                 }
@@ -55,7 +33,6 @@ public class Board {
                     } else {
                         System.out.print("\t" + BLACK_BOLD_BRIGHT + board[i][j].getName());
                     }
-
                 }
             }
             System.out.println("");
@@ -67,43 +44,5 @@ public class Board {
         return board[x][y];
     }
 
-    // TODO formatting
-    public void placePiece(Piece piece, int x, int y) {
-        board[x][y] = piece;
-    }
 
-    public void replacePiece(String move) {
-        int startX = Character.getNumericValue(move.charAt(1)) - 1;
-        int startY = map.get(move.charAt(0));
-        int x = Character.getNumericValue(move.charAt(4)) - 1;
-        int y = map.get(move.charAt(3));
-
-        board[x][y] = getPiece(startX, startY);
-        deletePiece(startX, startY);
-    }
-
-    public void deletePiece(int x, int y) {
-        board[x][y] = null;
-    }
-
-    //TODO naming
-    public boolean entranceOfBoard(String move) {
-        int x = Character.getNumericValue(move.charAt(4)) - 1;
-        int y = map.get(move.charAt(3));
-        return x < 8 && x >= 0 && y < 8 && y >= 0;
-    }
-
-    public boolean isEmptyPosition(String move) {
-        int x = Character.getNumericValue(move.charAt(4)) - 1;
-        int y = map.get(move.charAt(3));
-        return board[x][y] == null;
-    }
-
-    public boolean isYourColor(String move) {
-        int startX = Character.getNumericValue(move.charAt(1)) - 1;
-        int startY = map.get(move.charAt(0));
-        int nextX = Character.getNumericValue(move.charAt(4)) - 1;
-        int nextY = map.get(move.charAt(3));
-        return getPiece(startX, startY).isWhite() == getPiece(nextX, nextY).isWhite();
-    }
 }
