@@ -91,13 +91,7 @@ public class ChessGame {
     public void starGame() {
         moveTo("e2-e4");
         moveTo("e7-e5");
-        moveTo("d2-d4");
-        moveTo("d7-d5");
-        moveTo("h2-h4");
-        moveTo("h7-h6");
-        moveTo("h4-h5");
-        moveTo("a8-a5");
-
+        moveTo("e4-e5");
 
 
         // TODO add cycle here
@@ -107,10 +101,11 @@ public class ChessGame {
 
     public void moveTo(String move) {
         Coordinates[] arr = Parser.parseInput(move);
-        if (board.getPiece(arr[0].getX(), arr[0].getY()).canMoveTo(move) && checkBasicRules(move)) {
+        if (checkBasicRules(move) && board.getPiece(arr[0].getX(), arr[0].getY()).canMoveTo(move)) {
             replacePiece(move);
         }
     }
+
 
     public void placePiece(Piece piece, int x, int y) {
         board.getBoard()[x][y] = piece;
@@ -146,7 +141,9 @@ public class ChessGame {
             if (isEmptyPosition(move)) {
                 return true;
             }
-            return !isYourColor(move);
+            if (!isYourColor(move)) {
+                return true;
+            }
         }
         return false;
     }

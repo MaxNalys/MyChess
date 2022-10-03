@@ -20,5 +20,6 @@ public abstract class Piece {
     }
 
     public abstract boolean canMoveTo(String move);
+
 }
 
