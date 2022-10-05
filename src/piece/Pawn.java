@@ -5,14 +5,14 @@ import utils.Parser;
 
 public class Pawn extends Piece {
 
-    public boolean isMoved;
+    public static boolean isMoved;
 
     public Pawn(boolean white) {
         super(white, "♙");
-        this.isMoved = false;
+        isMoved = false;
     }
 
-    public boolean isMoved() {
+    public static boolean isMoved() {
         return isMoved;
     }
 
@@ -25,6 +25,8 @@ public class Pawn extends Piece {
         return pawnMovement(move);
     }
 
+
+
     public boolean pawnMovement(String move) {
         Coordinates[] arr = Parser.parseInput(move);
         int one_step;
@@ -36,7 +38,9 @@ public class Pawn extends Piece {
             one_step = -1;
             two_step = -2;
         }
+
         if (arr[1].getX() - arr[0].getX() == one_step) {
+            setMoved(true);
             if (arr[1].getY() == arr[0].getY()) {
                 return true;
             }
@@ -44,6 +48,7 @@ public class Pawn extends Piece {
                 return true;
             }
         } else if (!isMoved()) {
+            setMoved(true);
             if (arr[1].getX() - arr[0].getX() == two_step) {
                 return arr[1].getY() == arr[0].getY();
             }

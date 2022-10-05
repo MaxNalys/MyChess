@@ -19,7 +19,8 @@ public abstract class Piece {
         return isWhite;
     }
 
-    public abstract boolean canMoveTo(String move);
 
+
+    public abstract boolean canMoveTo(String move);
 }
 

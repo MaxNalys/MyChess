@@ -44,5 +44,4 @@ public class Board {
         return board[x][y];
     }
 
-
 }

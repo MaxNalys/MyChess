@@ -7,17 +7,12 @@ import java.util.Scanner;
 
 public class ChessGame {
     private Board board;
-    private King blackKing;
-    private King whiteKing;
 
 
     Scanner scanner = new Scanner(System.in);
 
     ChessGame() {
         this.board = new Board();
-        this.whiteKing = new King(true);
-        this.blackKing = new King(false);
-
         setUp();
 
     }
@@ -57,41 +52,45 @@ public class ChessGame {
         addKing(false, 7, 3);
     }
 
-    public void addKing(boolean isWhite, int x, int y) {
+    private void addKing(boolean isWhite, int x, int y) {
         King king = new King(isWhite);
         placePiece(king, x, y);
     }
 
-    public void addPawn(boolean isWhite, int x, int y) {
+    private void addPawn(boolean isWhite, int x, int y) {
         Pawn pawn = new Pawn(isWhite);
         placePiece(pawn, x, y);
     }
 
-    public void addRook(boolean isWhite, int x, int y) {
+    private void addRook(boolean isWhite, int x, int y) {
         Rook rook = new Rook(isWhite);
         placePiece(rook, x, y);
     }
 
-    public void addBishop(boolean isWhite, int x, int y) {
+    private void addBishop(boolean isWhite, int x, int y) {
         Bishop bishop = new Bishop(isWhite);
         placePiece(bishop, x, y);
     }
 
-    public void addQueen(boolean isWhite, int x, int y) {
+    private void addQueen(boolean isWhite, int x, int y) {
         Queen queen = new Queen(isWhite);
         placePiece(queen, x, y);
     }
 
-    public void addKnight(boolean isWhite, int x, int y) {
+    private void addKnight(boolean isWhite, int x, int y) {
         Knight knight = new Knight(isWhite);
         placePiece(knight, x, y);
     }
 
-
     public void starGame() {
         moveTo("e2-e4");
-        moveTo("e7-e5");
         moveTo("e4-e5");
+        moveTo("e5-e6");
+        moveTo("e7-e5");
+        moveTo("d2-d4");
+        moveTo("d4-d5");
+        moveTo("d5-d6");
+        moveTo("d7-d5");
 
 
         // TODO add cycle here
@@ -99,54 +98,65 @@ public class ChessGame {
         board.printBoard();
     }
 
-    public void moveTo(String move) {
+    private void moveTo(String move) {
         Coordinates[] arr = Parser.parseInput(move);
-        if (checkBasicRules(move) && board.getPiece(arr[0].getX(), arr[0].getY()).canMoveTo(move)) {
+
+        if (board.getPiece(arr[0].getX(), arr[0].getY()).canMoveTo(move) && checkBasicRules(move)) {
             replacePiece(move);
         }
     }
 
-
-    public void placePiece(Piece piece, int x, int y) {
+    private void placePiece(Piece piece, int x, int y) {
         board.getBoard()[x][y] = piece;
     }
 
-    public void replacePiece(String move) {
+    private void replacePiece(String move) {
         Coordinates[] arr = Parser.parseInput(move);
         board.getBoard()[arr[1].getX()][arr[1].getY()] = board.getPiece(arr[0].getX(), arr[0].getY());
         deletePiece(arr[0].getX(), arr[0].getY());
     }
 
-    public void deletePiece(int x, int y) {
+    private void deletePiece(int x, int y) {
         board.getBoard()[x][y] = null;
     }
 
-    public boolean isEntranceOfBoard(String move) {
+    private boolean isEntranceOfBoard(String move) {
         Coordinates[] arr = Parser.parseInput(move);
         return arr[1].getX() < Board.PIECE_BOARD_SIZE && arr[1].getX() >= 0 && arr[1].getY() < Board.PIECE_BOARD_SIZE && arr[1].getY() >= 0;
     }
 
-    public boolean isEmptyPosition(String move) {
+    private boolean isEmptyPosition(String move) {
         Coordinates[] arr = Parser.parseInput(move);
         return board.getBoard()[arr[1].getX()][arr[1].getY()] == null;
     }
 
-    public boolean isYourColor(String move) {
+    private boolean isYourColor(String move) {
         Coordinates[] arr = Parser.parseInput(move);
         return board.getPiece(arr[1].getX(), arr[1].getY()).isWhite() == board.getPiece(arr[0].getX(), arr[0].getY()).isWhite();
     }
 
-    public boolean checkBasicRules(String move) {
+    private boolean checkBasicRules(String move) {
         if (isEntranceOfBoard(move)) {
-            if (isEmptyPosition(move)) {
-                return true;
-            }
-            if (!isYourColor(move)) {
-                return true;
+            if (move.contains("-")) {
+                if (isEmptyPosition(move)) {
+                    return true;
+                }
+            } else if (move.contains("x")) {
+                if (!isYourColor(move)) {
+                    return true;
+                }
             }
         }
         return false;
     }
 
-
+    private boolean determinePiecesBetweenMove(String move) {
+        Coordinates[] arr = Parser.parseInput(move);
+        if (Pawn.isMoved()) {
+            return true;
+        } else if (!Pawn.isMoved() && board.getPiece(arr[1].getX() - 1, arr[0].getY()) != null) {
+            return true;
+        }
+        return false;
+    }
 }
