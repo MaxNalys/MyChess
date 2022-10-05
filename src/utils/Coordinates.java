@@ -1,6 +1,7 @@
 package utils;
 
 public class Coordinates {
+    // TODO should be final, as you should see IDE even suggests so
     private int x;
     private int y;
 

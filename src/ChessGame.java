@@ -112,10 +112,20 @@ public class ChessGame {
 
     private void replacePiece(String move) {
         Coordinates[] arr = Parser.parseInput(move);
+        // TODO
+        // Coordinates from = arr[0]; //or home, route or some better naming
+        // Coordinates to = arr[1]; // or destination
+
+        // also you should add method to Board: smth like
+        // Piece getPiece(Coordinates coordinates)
+        // and remove this ugly getter board.getBoard()[arr[1].getX()][arr[1].getY()]
+
         board.getBoard()[arr[1].getX()][arr[1].getY()] = board.getPiece(arr[0].getX(), arr[0].getY());
         deletePiece(arr[0].getX(), arr[0].getY());
     }
 
+    // TODO
+    // since you have Coordinates class now try to use it as a parameter everywhere
     private void deletePiece(int x, int y) {
         board.getBoard()[x][y] = null;
     }
