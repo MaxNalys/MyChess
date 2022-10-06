@@ -82,15 +82,16 @@ public class ChessGame {
         placePiece(knight, x, y);
     }
 
+    private void placePiece(Piece piece, int x, int y) {
+        board.getBoard()[x][y] = piece;
+    }
+
     public void starGame() {
         moveTo("e2-e4");
         moveTo("e4-e5");
         moveTo("e5-e6");
-        moveTo("e7-e5");
-        moveTo("d2-d4");
-        moveTo("d4-d5");
-        moveTo("d5-d6");
-        moveTo("d7-d5");
+
+
 
 
         // TODO add cycle here
@@ -99,74 +100,46 @@ public class ChessGame {
     }
 
     private void moveTo(String move) {
-        Coordinates[] arr = Parser.parseInput(move);
-
-        if (board.getPiece(arr[0].getX(), arr[0].getY()).canMoveTo(move) && checkBasicRules(move)) {
+        Coordinates[] coordinates=Parser.parseInput(move);
+        if (board.getPieceFromStartPosition(move).canMoveTo(coordinates[0],coordinates[1]) && checkBasicRules(move)) {
             replacePiece(move);
         }
     }
 
-    private void placePiece(Piece piece, int x, int y) {
-        board.getBoard()[x][y] = piece;
-    }
-
     private void replacePiece(String move) {
-        Coordinates[] arr = Parser.parseInput(move);
-        // TODO
-        // Coordinates from = arr[0]; //or home, route or some better naming
-        // Coordinates to = arr[1]; // or destination
-
-        // also you should add method to Board: smth like
-        // Piece getPiece(Coordinates coordinates)
-        // and remove this ugly getter board.getBoard()[arr[1].getX()][arr[1].getY()]
-
-        board.getBoard()[arr[1].getX()][arr[1].getY()] = board.getPiece(arr[0].getX(), arr[0].getY());
-        deletePiece(arr[0].getX(), arr[0].getY());
+        board.setPieceOnTheNextSpot(move);
+        deletePieceFromPosition(move);
     }
 
-    // TODO
-    // since you have Coordinates class now try to use it as a parameter everywhere
-    private void deletePiece(int x, int y) {
-        board.getBoard()[x][y] = null;
+    private void deletePieceFromPosition(String move) {
+        Coordinates[] coordinates = Parser.parseInput(move);
+        board.getBoard()[coordinates[0].getX()][coordinates[0].getY()] = null;
     }
 
     private boolean isEntranceOfBoard(String move) {
-        Coordinates[] arr = Parser.parseInput(move);
-        return arr[1].getX() < Board.PIECE_BOARD_SIZE && arr[1].getX() >= 0 && arr[1].getY() < Board.PIECE_BOARD_SIZE && arr[1].getY() >= 0;
+        Coordinates[] coordinates = Parser.parseInput(move);
+        return coordinates[1].getX() < Board.PIECE_BOARD_SIZE && coordinates[1].getX() >= 0 && coordinates[1].getY() < Board.PIECE_BOARD_SIZE && coordinates[1].getY() >= 0;
     }
 
     private boolean isEmptyPosition(String move) {
-        Coordinates[] arr = Parser.parseInput(move);
-        return board.getBoard()[arr[1].getX()][arr[1].getY()] == null;
+        Coordinates[] coordinates = Parser.parseInput(move);
+        return board.getBoard()[coordinates[1].getX()][coordinates[1].getY()] == null;
     }
 
     private boolean isYourColor(String move) {
-        Coordinates[] arr = Parser.parseInput(move);
-        return board.getPiece(arr[1].getX(), arr[1].getY()).isWhite() == board.getPiece(arr[0].getX(), arr[0].getY()).isWhite();
+        return board.getPieceFromStartPosition(move).isWhite() == board.getPieceFromNextPosition(move).isWhite();
     }
 
     private boolean checkBasicRules(String move) {
         if (isEntranceOfBoard(move)) {
             if (move.contains("-")) {
-                if (isEmptyPosition(move)) {
-                    return true;
-                }
+                return isEmptyPosition(move);
             } else if (move.contains("x")) {
-                if (!isYourColor(move)) {
-                    return true;
-                }
+                return !isYourColor(move);
             }
         }
         return false;
     }
 
-    private boolean determinePiecesBetweenMove(String move) {
-        Coordinates[] arr = Parser.parseInput(move);
-        if (Pawn.isMoved()) {
-            return true;
-        } else if (!Pawn.isMoved() && board.getPiece(arr[1].getX() - 1, arr[0].getY()) != null) {
-            return true;
-        }
-        return false;
-    }
+
 }

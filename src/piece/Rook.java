@@ -16,17 +16,16 @@ public class Rook extends Piece {
     }
 
     @Override
-    public boolean canMoveTo(String move) {
-        return isMovingStraight(move);
+    public boolean canMoveTo(Coordinates coordinatesPiece, Coordinates coordinatesNextSpot) {
+        return isMovingStraight(coordinatesPiece, coordinatesNextSpot);
     }
 
-    public boolean isMovingStraight(String move) {
-        Coordinates[] arr = Parser.parseInput(move);
-        if (arr[0].getX() == arr[1].getX()) {
-            return arr[0].getX() > arr[1].getX() || arr[1].getY() > arr[0].getX();
+    public boolean isMovingStraight(Coordinates coordinatesPiece, Coordinates coordinatesNextSpot) {
+        if (coordinatesPiece.getX() == coordinatesNextSpot.getX()) {
+            return coordinatesPiece.getX() > coordinatesNextSpot.getX() || coordinatesNextSpot.getY() > coordinatesPiece.getX();
         }
-        if (arr[0].getY() == arr[1].getY()) {
-            return arr[0].getX() > arr[1].getX() || arr[1].getX() > arr[0].getX();
+        if (coordinatesPiece.getY() == coordinatesNextSpot.getY()) {
+            return coordinatesPiece.getX() > coordinatesNextSpot.getX() || coordinatesNextSpot.getX() > coordinatesPiece.getX();
         }
         return false;
     }

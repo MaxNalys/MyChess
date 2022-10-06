@@ -10,14 +10,13 @@ public class Knight extends Piece {
     }
 
     @Override
-    public boolean canMoveTo(String move) {
-        return knightMovement(move);
+    public boolean canMoveTo(Coordinates coordinatesPiece, Coordinates coordinatesNextSpot) {
+        return knightMovement(coordinatesPiece, coordinatesNextSpot);
     }
 
-    public boolean knightMovement(String move) {
-        Coordinates[] arr = Parser.parseInput(move);
-        if (Math.abs(arr[0].getX() - arr[1].getX()) == 2 && Math.abs(arr[0].getY() - arr[1].getY()) == 1)
+    public boolean knightMovement(Coordinates coordinatesPiece, Coordinates coordinatesNextSpot) {
+        if (Math.abs(coordinatesPiece.getX() - coordinatesNextSpot.getX()) == 2 && Math.abs(coordinatesPiece.getY() - coordinatesNextSpot.getY()) == 1)
             return true;
-        return Math.abs(arr[0].getX() - arr[1].getX()) == 1 && Math.abs(arr[0].getY() - arr[1].getY()) == 2;
+        return Math.abs(coordinatesPiece.getX() - coordinatesNextSpot.getX()) == 1 && Math.abs(coordinatesPiece.getY() - coordinatesNextSpot.getY()) == 2;
     }
 }

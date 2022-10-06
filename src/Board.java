@@ -1,5 +1,7 @@
 
 import piece.Piece;
+import utils.Coordinates;
+import utils.Parser;
 
 public class Board {
     private final Piece[][] board;
@@ -40,8 +42,17 @@ public class Board {
         System.out.print(WHITE_BOLD_BRIGHT + "    h   g   f   e   d   c   b   a");
     }
 
-    public Piece getPiece(int x, int y) {
-        return board[x][y];
+    public Piece getPieceFromStartPosition(String move) {
+        Coordinates[] coordinates = Parser.parseInput(move);
+        return board[coordinates[0].getX()][coordinates[0].getY()];
+    }
+    public Piece getPieceFromNextPosition(String move) {
+        Coordinates[] coordinates = Parser.parseInput(move);
+        return board[coordinates[1].getX()][coordinates[1].getY()];
+    }
+    public void setPieceOnTheNextSpot(String move){
+        Coordinates[] coordinates = Parser.parseInput(move);
+        board[coordinates[1].getX()][coordinates[1].getY()]=getPieceFromStartPosition(move);
     }
 
 }

@@ -10,18 +10,18 @@ public class Bishop extends Piece {
     }
 
     @Override
-    public boolean canMoveTo(String move) {
-        return isMovingDiagonal(move);
+    public boolean canMoveTo(Coordinates coordinatesPiece, Coordinates coordinatesNextSpot) {
+        return isMovingDiagonal(coordinatesPiece, coordinatesNextSpot);
     }
 
-    public boolean isMovingDiagonal(String move) {
-        Coordinates[] arr = Parser.parseInput(move);
-        int xTotal = Math.abs(arr[1].getX() - arr[0].getX());
-        int yTotal = Math.abs(arr[1].getY() - arr[0].getY());
+    public boolean isMovingDiagonal(Coordinates coordinatesPiece, Coordinates coordinatesNextSpot) {
+        int xTotal = Math.abs(coordinatesNextSpot.getX() - coordinatesPiece.getX());
+        int yTotal = Math.abs(coordinatesNextSpot.getY() - coordinatesPiece.getY());
         if (xTotal == yTotal) {
-            if (arr[1].getX() < arr[0].getX() || arr[1].getX() > arr[0].getX()) {
+            if (coordinatesNextSpot.getX() < coordinatesPiece.getX() || coordinatesNextSpot.getX() > coordinatesPiece.getX()) {
                 return true;
-            } else return arr[1].getY() < arr[0].getY() || arr[1].getY() > arr[0].getY();
+            } else
+                return coordinatesNextSpot.getY() < coordinatesPiece.getY() || coordinatesNextSpot.getY() > coordinatesPiece.getY();
         }
         return false;
     }

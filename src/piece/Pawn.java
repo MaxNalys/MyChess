@@ -21,14 +21,12 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public boolean canMoveTo(String move) {
-        return pawnMovement(move);
+    public boolean canMoveTo(Coordinates coordinatesPiece, Coordinates coordinatesNextSpot) {
+        return pawnMovement(coordinatesPiece, coordinatesNextSpot);
     }
 
 
-
-    public boolean pawnMovement(String move) {
-        Coordinates[] arr = Parser.parseInput(move);
+    public boolean pawnMovement(Coordinates coordinatesPiece, Coordinates coordinatesNextSpot) {
         int one_step;
         int two_step;
         if (isWhite()) {
@@ -39,18 +37,18 @@ public class Pawn extends Piece {
             two_step = -2;
         }
 
-        if (arr[1].getX() - arr[0].getX() == one_step) {
+        if (coordinatesNextSpot.getX() - coordinatesPiece.getX() == one_step) {
             setMoved(true);
-            if (arr[1].getY() == arr[0].getY()) {
+            if (coordinatesNextSpot.getY() == coordinatesPiece.getY()) {
                 return true;
             }
-            if (Math.abs(arr[0].getY() - arr[1].getY()) == 1) {
+            if (Math.abs(coordinatesPiece.getY() - coordinatesNextSpot.getY()) == 1) {
                 return true;
             }
         } else if (!isMoved()) {
             setMoved(true);
-            if (arr[1].getX() - arr[0].getX() == two_step) {
-                return arr[1].getY() == arr[0].getY();
+            if (coordinatesNextSpot.getX() - coordinatesPiece.getX() == two_step) {
+                return coordinatesNextSpot.getY() == coordinatesPiece.getY();
             }
         }
         return false;
