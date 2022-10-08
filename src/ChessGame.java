@@ -3,16 +3,24 @@ import piece.*;
 import utils.Coordinates;
 import utils.Parser;
 
+import java.util.LinkedList;
 import java.util.Scanner;
 
 public class ChessGame {
+    private King blackKing;
+    private King whiteKing;
     private Board board;
+    private Player player;
+    private LinkedList<Piece> blackPieces;
+    private LinkedList<Piece> whitePieces;
 
-
-    Scanner scanner = new Scanner(System.in);
 
     ChessGame() {
         this.board = new Board();
+        blackKing = new King(false);
+        whiteKing = new King(true);
+        blackPieces = new LinkedList<Piece>();
+        whitePieces = new LinkedList<Piece>();
         setUp();
 
     }
@@ -48,38 +56,48 @@ public class ChessGame {
         addPawn(false, 6, 5);
         addPawn(false, 6, 6);
         addPawn(false, 6, 7);
-        addKing(true, 0, 3);
-        addKing(false, 7, 3);
+        placePiece(blackKing, 7, 3);
+        placePiece(whiteKing, 0, 3);
     }
 
-    private void addKing(boolean isWhite, int x, int y) {
-        King king = new King(isWhite);
-        placePiece(king, x, y);
+    private void pieceColorHelper(Piece piece, boolean isWhite) {
+        if (isWhite) {
+            whitePieces.add(piece);
+        } else {
+            blackPieces.add(piece);
+        }
     }
+
 
     private void addPawn(boolean isWhite, int x, int y) {
         Pawn pawn = new Pawn(isWhite);
         placePiece(pawn, x, y);
+        pieceColorHelper(pawn, isWhite);
     }
+
 
     private void addRook(boolean isWhite, int x, int y) {
         Rook rook = new Rook(isWhite);
         placePiece(rook, x, y);
+        pieceColorHelper(rook, isWhite);
     }
 
     private void addBishop(boolean isWhite, int x, int y) {
         Bishop bishop = new Bishop(isWhite);
         placePiece(bishop, x, y);
+        pieceColorHelper(bishop, isWhite);
     }
 
     private void addQueen(boolean isWhite, int x, int y) {
         Queen queen = new Queen(isWhite);
         placePiece(queen, x, y);
+        pieceColorHelper(queen, isWhite);
     }
 
     private void addKnight(boolean isWhite, int x, int y) {
         Knight knight = new Knight(isWhite);
         placePiece(knight, x, y);
+        pieceColorHelper(knight, isWhite);
     }
 
     private void placePiece(Piece piece, int x, int y) {
@@ -87,10 +105,11 @@ public class ChessGame {
     }
 
     public void starGame() {
+        Scanner scanner = new Scanner(System.in);
         moveTo("e2-e4");
         moveTo("e4-e5");
         moveTo("e5-e6");
-
+        moveTo("e7-e5");
 
 
 
@@ -100,8 +119,8 @@ public class ChessGame {
     }
 
     private void moveTo(String move) {
-        Coordinates[] coordinates=Parser.parseInput(move);
-        if (board.getPieceFromStartPosition(move).canMoveTo(coordinates[0],coordinates[1]) && checkBasicRules(move)) {
+        Coordinates[] coordinates = Parser.parseInput(move);
+        if (board.getPieceFromStartPosition(move).canMoveTo(coordinates[0], coordinates[1]) && checkBasicRules(move)) {
             replacePiece(move);
         }
     }
@@ -122,8 +141,7 @@ public class ChessGame {
     }
 
     private boolean isEmptyPosition(String move) {
-        Coordinates[] coordinates = Parser.parseInput(move);
-        return board.getBoard()[coordinates[1].getX()][coordinates[1].getY()] == null;
+        return board.getPieceFromNextPosition(move) == null;
     }
 
     private boolean isYourColor(String move) {
@@ -131,14 +149,132 @@ public class ChessGame {
     }
 
     private boolean checkBasicRules(String move) {
-        if (isEntranceOfBoard(move)) {
-            if (move.contains("-")) {
-                return isEmptyPosition(move);
-            } else if (move.contains("x")) {
-                return !isYourColor(move);
+        if (isEntranceOfBoard(move) && determineAnyPiecesBetweenMoves(move)) {
+            if(isEmptyPosition(move)){
+                return true;
             }
+            return !isYourColor(move);
         }
         return false;
+    }
+
+    public boolean determineAnyPiecesBetweenMoves(String move) {
+        Coordinates[] coordinates = Parser.parseInput(move);
+        switch (board.getPieceFromStartPosition(move).getName()) {
+            case "♙":
+                int value;
+                if(board.getPieceFromStartPosition(move).isWhite()){
+                    value=1;
+                }else{
+                    value=-1;
+                }
+                return board.getBoard()[coordinates[0].getX() +value ][coordinates[0].getY()] == null;
+            case "♗":
+                return lookForPiecesBetweenMovesForDiagonalMoves(move);
+            case "♖":
+                return lookForPiecesBetweenMovesForStraightMoves(move);
+            case "♕":
+                return lookForPiecesBetweenMovesForStraightMoves(move) && lookForPiecesBetweenMovesForDiagonalMoves(move);
+            case "♘":
+            case "♔":
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private boolean lookForPiecesBetweenMovesForDiagonalMoves(String move) {
+        Coordinates[] coordinates = Parser.parseInput(move);
+        int xStart = 0;
+        int yStart = 0;
+        int xFinish = 1;
+
+        if (coordinates[1].getX() < coordinates[0].getX()) {
+            xStart = coordinates[1].getX();
+            xFinish = coordinates[0].getX();
+        } else if (coordinates[1].getX() > coordinates[0].getX()) {
+            xStart = coordinates[1].getX();
+            xFinish = coordinates[0].getX();
+        }
+
+        if (coordinates[1].getY() < coordinates[0].getY()) {
+            yStart = coordinates[1].getY();
+        } else if (coordinates[1].getY() > coordinates[0].getY()) {
+            yStart = coordinates[0].getY();
+        }
+        yStart++;
+        xStart++;
+        for (; xStart < xFinish; xStart++, yStart++) {
+            if (board.getPieceAt(xStart, yStart) != null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean lookForPiecesBetweenMovesForStraightMoves(String move) {
+        Coordinates[] coordinates = Parser.parseInput(move);
+        int smallerVal;
+        int largerVal;
+
+        if (coordinates[0].getX() == coordinates[1].getX()) {
+            if (coordinates[0].getY() > coordinates[1].getY()) {
+                smallerVal = coordinates[1].getY();
+                largerVal = coordinates[0].getY();
+            } else if (coordinates[1].getY() > coordinates[0].getY()) {
+                smallerVal = coordinates[0].getY();
+                largerVal = coordinates[1].getY();
+            } else return false;
+
+            smallerVal++;
+            for (; smallerVal < largerVal; smallerVal++) {
+                if (board.getPieceAt(coordinates[0].getX(), smallerVal) != null) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        if (coordinates[0].getY() == coordinates[1].getY()) {
+            if (coordinates[0].getX() > coordinates[1].getX()) {
+                smallerVal = coordinates[1].getX();
+                largerVal = coordinates[0].getX();
+            } else if (coordinates[1].getX() > coordinates[0].getX()) {
+                smallerVal = coordinates[0].getX();
+                largerVal = coordinates[1].getX();
+            } else return false;
+
+
+            smallerVal++;
+            for (; smallerVal < largerVal; smallerVal++) {
+                if (board.getPieceAt(smallerVal, coordinates[0].getY()) != null) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean gameIsOver() {
+        return false;
+    }
+
+    public boolean isKingCheck(boolean isWhite) {
+        boolean result = false;
+
+        LinkedList<Piece> pieceLinkedList;
+        King kingInQuestion;
+        if (isWhite) {
+            pieceLinkedList = blackPieces;
+            kingInQuestion = whiteKing;
+        } else {
+            pieceLinkedList = whitePieces;
+            kingInQuestion = blackKing;
+        }
+
+        return result;
     }
 
 

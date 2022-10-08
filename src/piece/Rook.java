@@ -1,7 +1,6 @@
 package piece;
 
 import utils.Coordinates;
-import utils.Parser;
 
 public class Rook extends Piece {
     private boolean isMoved;
@@ -9,6 +8,10 @@ public class Rook extends Piece {
     public Rook(boolean white) {
         super(white, "♖");
         this.isMoved = false;
+    }
+
+    public void setMoved(boolean moved) {
+        isMoved = moved;
     }
 
     public boolean isMoved() {

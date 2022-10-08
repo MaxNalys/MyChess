@@ -1,7 +1,6 @@
 package piece;
 
 import utils.Coordinates;
-import utils.Parser;
 
 public class Queen extends Piece {
     public Queen(boolean white) {

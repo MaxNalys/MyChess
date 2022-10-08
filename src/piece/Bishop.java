@@ -1,7 +1,7 @@
 package piece;
 
 import utils.Coordinates;
-import utils.Parser;
+
 
 public class Bishop extends Piece {
 

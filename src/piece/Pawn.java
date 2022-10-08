@@ -1,18 +1,19 @@
 package piece;
 
 import utils.Coordinates;
-import utils.Parser;
+
+import java.net.PortUnreachableException;
 
 public class Pawn extends Piece {
 
-    public static boolean isMoved;
+   public boolean isMoved;
 
     public Pawn(boolean white) {
         super(white, "♙");
         isMoved = false;
     }
 
-    public static boolean isMoved() {
+    public boolean isMoved() {
         return isMoved;
     }
 

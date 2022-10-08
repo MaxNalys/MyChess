@@ -1,11 +1,10 @@
 package piece;
 
 import utils.Coordinates;
-import utils.Parser;
 
 public class King extends Piece {
-    boolean isCheckmate;
-    boolean isMoved;
+    private boolean isCheckmate;
+     private boolean isMoved;
 
     public King(boolean white) {
         super(white, "♔");
@@ -15,6 +14,10 @@ public class King extends Piece {
 
     public boolean isMoved() {
         return isMoved;
+    }
+
+    public void setMoved(boolean moved) {
+        isMoved = moved;
     }
 
     @Override
