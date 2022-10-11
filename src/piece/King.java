@@ -3,17 +3,35 @@ package piece;
 import utils.Coordinates;
 
 public class King extends Piece {
-    private boolean isCheckmate;
-     private boolean isMoved;
+    private int x;
+    private int y;
+    private boolean isMoved;
 
-    public King(boolean white) {
+    public King(boolean white, int x, int y) {
         super(white, "♔");
-        this.isCheckmate = false;
+        this.x = x;
+        this.y = y;
         this.isMoved = false;
     }
 
     public boolean isMoved() {
         return isMoved;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getX() {
+        return x;
     }
 
     public void setMoved(boolean moved) {
@@ -22,7 +40,7 @@ public class King extends Piece {
 
     @Override
     public boolean canMoveTo(Coordinates coordinatesPiece, Coordinates coordinatesNextSpot) {
-        return kingMovement(coordinatesPiece,coordinatesNextSpot);
+        return kingMovement(coordinatesPiece, coordinatesNextSpot);
     }
 
     public boolean kingMovement(Coordinates coordinatesPiece, Coordinates coordinatesNextSpot) {

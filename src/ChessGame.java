@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.Scanner;
 
 public class ChessGame {
+    private boolean playingForWhite;
     private King blackKing;
     private King whiteKing;
     private Board board;
@@ -17,12 +18,21 @@ public class ChessGame {
 
     ChessGame() {
         this.board = new Board();
-        blackKing = new King(false);
-        whiteKing = new King(true);
+        blackKing = new King(false, 7, 3);
+        whiteKing = new King(true, 0, 3);
         blackPieces = new LinkedList<Piece>();
         whitePieces = new LinkedList<Piece>();
+        blackPieces.add(blackKing);
+        whitePieces.add(whiteKing);
         setUp();
+        chooseColour();
 
+    }
+
+    public void chooseColour() {
+        //true-white
+        //false-black
+        this.playingForWhite = false;
     }
 
     public void setUp() {
@@ -56,8 +66,8 @@ public class ChessGame {
         addPawn(false, 6, 5);
         addPawn(false, 6, 6);
         addPawn(false, 6, 7);
-        placePiece(blackKing, 7, 3);
-        placePiece(whiteKing, 0, 3);
+        placePiece(blackKing, blackKing.getX(), blackKing.getY());
+        placePiece(whiteKing, whiteKing.getX(), whiteKing.getY());
     }
 
     private void pieceColorHelper(Piece piece, boolean isWhite) {
@@ -106,11 +116,6 @@ public class ChessGame {
 
     public void starGame() {
         Scanner scanner = new Scanner(System.in);
-        moveTo("e2-e4");
-        moveTo("e4-e5");
-        moveTo("e5-e6");
-        moveTo("e7-e5");
-
 
 
         // TODO add cycle here
@@ -150,7 +155,7 @@ public class ChessGame {
 
     private boolean checkBasicRules(String move) {
         if (isEntranceOfBoard(move) && determineAnyPiecesBetweenMoves(move)) {
-            if(isEmptyPosition(move)){
+            if (isEmptyPosition(move)) {
                 return true;
             }
             return !isYourColor(move);
@@ -163,12 +168,12 @@ public class ChessGame {
         switch (board.getPieceFromStartPosition(move).getName()) {
             case "♙":
                 int value;
-                if(board.getPieceFromStartPosition(move).isWhite()){
-                    value=1;
-                }else{
-                    value=-1;
+                if (board.getPieceFromStartPosition(move).isWhite()) {
+                    value = 1;
+                } else {
+                    value = -1;
                 }
-                return board.getBoard()[coordinates[0].getX() +value ][coordinates[0].getY()] == null;
+                return board.getBoard()[coordinates[0].getX() + value][coordinates[0].getY()] == null;
             case "♗":
                 return lookForPiecesBetweenMovesForDiagonalMoves(move);
             case "♖":
@@ -261,21 +266,25 @@ public class ChessGame {
         return false;
     }
 
-    public boolean isKingCheck(boolean isWhite) {
-        boolean result = false;
-
+    public boolean isKingCheck() {
         LinkedList<Piece> pieceLinkedList;
-        King kingInQuestion;
-        if (isWhite) {
+        King king;
+        if (playingForWhite) {
             pieceLinkedList = blackPieces;
-            kingInQuestion = whiteKing;
+            king=whiteKing;
         } else {
             pieceLinkedList = whitePieces;
-            kingInQuestion = blackKing;
+            king=blackKing;
         }
 
-        return result;
+        for (Piece currentPiece : pieceLinkedList) {
+            if (currentPiece.canMoveTo(board.getPieceCoordinates(currentPiece), board.getKingCoordinate(king))) {
+                return true;
+            }
+        }
+        return false;
     }
+
 
 
 }

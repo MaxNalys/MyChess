@@ -61,4 +61,29 @@ public class Board {
         board[coordinates[1].getX()][coordinates[1].getY()] = getPieceFromStartPosition(move);
     }
 
+    public Coordinates getKingCoordinate(Piece piece) {
+        for (int i = 0; i < PIECE_BOARD_SIZE; i++) {
+            for (int j = 0; j < PIECE_BOARD_SIZE; j++) {
+                if (getPieceAt(i, j).getName().contains("♔")) {
+                    Coordinates kingCoordinates = new Coordinates(i, j);
+                    return kingCoordinates;
+
+                }
+            }
+        }
+        return null;
+    }
+    public Coordinates getPieceCoordinates(Piece piece){
+        for (int i = 0; i < PIECE_BOARD_SIZE; i++) {
+            for (int j = 0; j < PIECE_BOARD_SIZE; j++) {
+                if (board[i][j]==piece) {
+                    Coordinates pieceCoordinates = new Coordinates(i, j);
+                    return pieceCoordinates;
+
+                }
+            }
+        }
+        return null;
+    }
+
 }
