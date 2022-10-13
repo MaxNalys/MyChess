@@ -61,9 +61,12 @@ public class Board {
         board[coordinates[1].getX()][coordinates[1].getY()] = getPieceFromStartPosition(move);
     }
 
+    // TODO parameter is not used
     public Coordinates getKingCoordinate(Piece piece) {
         for (int i = 0; i < PIECE_BOARD_SIZE; i++) {
             for (int j = 0; j < PIECE_BOARD_SIZE; j++) {
+                // TODO use some identifier for piece instead of "♔"
+                // also, there will be 2 kings on the board.which one are you looking for?
                 if (getPieceAt(i, j).getName().contains("♔")) {
                     Coordinates kingCoordinates = new Coordinates(i, j);
                     return kingCoordinates;
@@ -73,9 +76,12 @@ public class Board {
         }
         return null;
     }
+
+    // TODO getKingCoordinate() seems redundant since you have this method
     public Coordinates getPieceCoordinates(Piece piece){
         for (int i = 0; i < PIECE_BOARD_SIZE; i++) {
             for (int j = 0; j < PIECE_BOARD_SIZE; j++) {
+                // TODO formatting
                 if (board[i][j]==piece) {
                     Coordinates pieceCoordinates = new Coordinates(i, j);
                     return pieceCoordinates;

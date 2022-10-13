@@ -14,6 +14,7 @@ public class King extends Piece {
         this.isMoved = false;
     }
 
+    // TODO dont add methods you don't use
     public boolean isMoved() {
         return isMoved;
     }

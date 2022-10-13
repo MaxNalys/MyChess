@@ -119,6 +119,7 @@ public class ChessGame {
 
 
         // TODO add cycle here
+        // Start implementing this
 
         board.printBoard();
     }
@@ -140,6 +141,8 @@ public class ChessGame {
         board.getBoard()[coordinates[0].getX()][coordinates[0].getY()] = null;
     }
 
+    // TODO i don't like naming here
+    // isWithinBoundsMove() or smth else. I am bad at naming
     private boolean isEntranceOfBoard(String move) {
         Coordinates[] coordinates = Parser.parseInput(move);
         return coordinates[1].getX() < Board.PIECE_BOARD_SIZE && coordinates[1].getX() >= 0 && coordinates[1].getY() < Board.PIECE_BOARD_SIZE && coordinates[1].getY() >= 0;
@@ -166,6 +169,7 @@ public class ChessGame {
     public boolean determineAnyPiecesBetweenMoves(String move) {
         Coordinates[] coordinates = Parser.parseInput(move);
         switch (board.getPieceFromStartPosition(move).getName()) {
+            // TODO use identifiers
             case "♙":
                 int value;
                 if (board.getPieceFromStartPosition(move).isWhite()) {

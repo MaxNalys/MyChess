@@ -3,6 +3,7 @@ package piece;
 import utils.Coordinates;
 
 public class Rook extends Piece {
+    // TODO i would name it hasMoved, it makes more sense
     private boolean isMoved;
 
     public Rook(boolean white) {
@@ -23,6 +24,7 @@ public class Rook extends Piece {
         return isMovingStraight(coordinatesPiece, coordinatesNextSpot);
     }
 
+    // TODO why does it differ from similar method in Queen class?
     public boolean isMovingStraight(Coordinates coordinatesPiece, Coordinates coordinatesNextSpot) {
         if (coordinatesPiece.getX() == coordinatesNextSpot.getX()) {
             return coordinatesPiece.getX() > coordinatesNextSpot.getX() || coordinatesNextSpot.getY() > coordinatesPiece.getX();
