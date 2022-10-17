@@ -29,6 +29,20 @@ public class Parser {
         arrayWithCoordinates[1] = nextCoordinates;
         return arrayWithCoordinates;
     }
+    public static String convertCoordinatesToMove(Coordinates coordinates1,Coordinates coordinates2) {
+        String move;
+        move=getKey(algebraicChessNotationMap, coordinates1.getY()).toString()+ coordinates1.getX() +"-"+getKey(algebraicChessNotationMap, coordinates2.getY()).toString()+ coordinates2.getX();
+        return move;
+    }
+
+    public static <K, V> K getKey(Map<K, V> map, V value) {
+        for (Map.Entry<K, V> entry : map.entrySet()) {
+            if (value.equals(entry.getValue())) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
 }
 
 

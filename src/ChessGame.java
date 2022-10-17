@@ -1,4 +1,6 @@
 
+import board.Board;
+import board.PrintBoard;
 import piece.*;
 import utils.Coordinates;
 import utils.Parser;
@@ -11,19 +13,16 @@ public class ChessGame {
     private King blackKing;
     private King whiteKing;
     private Board board;
-    private Player player;
     private LinkedList<Piece> blackPieces;
     private LinkedList<Piece> whitePieces;
 
 
     ChessGame() {
         this.board = new Board();
-        blackKing = new King(false, 7, 3);
-        whiteKing = new King(true, 0, 3);
+        blackKing = new King(false);
+        whiteKing = new King(true);
         blackPieces = new LinkedList<Piece>();
         whitePieces = new LinkedList<Piece>();
-        blackPieces.add(blackKing);
-        whitePieces.add(whiteKing);
         setUp();
         chooseColour();
 
@@ -66,8 +65,8 @@ public class ChessGame {
         addPawn(false, 6, 5);
         addPawn(false, 6, 6);
         addPawn(false, 6, 7);
-        placePiece(blackKing, blackKing.getX(), blackKing.getY());
-        placePiece(whiteKing, whiteKing.getX(), whiteKing.getY());
+        placePiece(blackKing, 7, 3);
+        placePiece(whiteKing, 0, 3);
     }
 
     private void pieceColorHelper(Piece piece, boolean isWhite) {
@@ -116,18 +115,22 @@ public class ChessGame {
 
     public void starGame() {
         Scanner scanner = new Scanner(System.in);
-
+        if(!isWhiteKingInCheck()&&)
+        moveTo("e2-e4");
+        moveTo("d7-d5");
+        PrintBoard.printBoard(board);
 
         // TODO add cycle here
         // Start implementing this
 
-        board.printBoard();
+
     }
 
     private void moveTo(String move) {
         Coordinates[] coordinates = Parser.parseInput(move);
         if (board.getPieceFromStartPosition(move).canMoveTo(coordinates[0], coordinates[1]) && checkBasicRules(move)) {
             replacePiece(move);
+
         }
     }
 
@@ -141,9 +144,8 @@ public class ChessGame {
         board.getBoard()[coordinates[0].getX()][coordinates[0].getY()] = null;
     }
 
-    // TODO i don't like naming here
-    // isWithinBoundsMove() or smth else. I am bad at naming
-    private boolean isEntranceOfBoard(String move) {
+
+    private boolean isWithinBoundsMove(String move) {
         Coordinates[] coordinates = Parser.parseInput(move);
         return coordinates[1].getX() < Board.PIECE_BOARD_SIZE && coordinates[1].getX() >= 0 && coordinates[1].getY() < Board.PIECE_BOARD_SIZE && coordinates[1].getY() >= 0;
     }
@@ -157,7 +159,7 @@ public class ChessGame {
     }
 
     private boolean checkBasicRules(String move) {
-        if (isEntranceOfBoard(move) && determineAnyPiecesBetweenMoves(move)) {
+        if (isWithinBoundsMove(move) && determineAnyPiecesBetweenMoves(move)) {
             if (isEmptyPosition(move)) {
                 return true;
             }
@@ -168,9 +170,8 @@ public class ChessGame {
 
     public boolean determineAnyPiecesBetweenMoves(String move) {
         Coordinates[] coordinates = Parser.parseInput(move);
-        switch (board.getPieceFromStartPosition(move).getName()) {
-            // TODO use identifiers
-            case "♙":
+        switch (board.getPieceFromStartPosition(move).getIdentifiers()) {
+            case PAWN:
                 int value;
                 if (board.getPieceFromStartPosition(move).isWhite()) {
                     value = 1;
@@ -178,14 +179,14 @@ public class ChessGame {
                     value = -1;
                 }
                 return board.getBoard()[coordinates[0].getX() + value][coordinates[0].getY()] == null;
-            case "♗":
+            case BISHOP:
                 return lookForPiecesBetweenMovesForDiagonalMoves(move);
-            case "♖":
+            case ROOK:
                 return lookForPiecesBetweenMovesForStraightMoves(move);
-            case "♕":
-                return lookForPiecesBetweenMovesForStraightMoves(move) && lookForPiecesBetweenMovesForDiagonalMoves(move);
-            case "♘":
-            case "♔":
+            case QUEEN:
+                return lookForPiecesBetweenMovesForStraightMoves(move) || lookForPiecesBetweenMovesForDiagonalMoves(move);
+            case KNIGHT:
+            case KING:
                 return true;
             default:
                 return false;
@@ -262,7 +263,6 @@ public class ChessGame {
             }
             return true;
         }
-
         return false;
     }
 
@@ -270,19 +270,10 @@ public class ChessGame {
         return false;
     }
 
-    public boolean isKingCheck() {
-        LinkedList<Piece> pieceLinkedList;
-        King king;
-        if (playingForWhite) {
-            pieceLinkedList = blackPieces;
-            king=whiteKing;
-        } else {
-            pieceLinkedList = whitePieces;
-            king=blackKing;
-        }
-
-        for (Piece currentPiece : pieceLinkedList) {
-            if (currentPiece.canMoveTo(board.getPieceCoordinates(currentPiece), board.getKingCoordinate(king))) {
+    public boolean isBlackKingInCheck() {
+        for (Piece currPiece : whitePieces) {
+            if (currPiece.canMoveTo(board.getPieceCoordinates(currPiece), board.getPieceCoordinates(blackKing)) && determineAnyPiecesBetweenMoves(Parser.convertCoordinatesToMove(board.getPieceCoordinates(currPiece), board.getPieceCoordinates(blackKing)))) {
+                System.out.println("Check");
                 return true;
             }
         }
@@ -290,5 +281,13 @@ public class ChessGame {
     }
 
 
-
+    public boolean isWhiteKingInCheck() {
+        for (Piece currPiece : blackPieces) {
+            if (currPiece.canMoveTo(board.getPieceCoordinates(currPiece), board.getPieceCoordinates(whiteKing)) && determineAnyPiecesBetweenMoves(Parser.convertCoordinatesToMove(board.getPieceCoordinates(currPiece), board.getPieceCoordinates(whiteKing)))) {
+                System.out.println("Check");
+                return true;
+            }
+        }
+        return false;
+    }
 }

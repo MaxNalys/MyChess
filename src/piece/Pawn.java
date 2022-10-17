@@ -2,14 +2,12 @@ package piece;
 
 import utils.Coordinates;
 
-import java.net.PortUnreachableException;
-
 public class Pawn extends Piece {
 
    public boolean isMoved;
 
     public Pawn(boolean white) {
-        super(white, "♙");
+        super(white,PieceName.PAWN);
         isMoved = false;
     }
 
@@ -25,7 +23,6 @@ public class Pawn extends Piece {
     public boolean canMoveTo(Coordinates coordinatesPiece, Coordinates coordinatesNextSpot) {
         return pawnMovement(coordinatesPiece, coordinatesNextSpot);
     }
-
 
     public boolean pawnMovement(Coordinates coordinatesPiece, Coordinates coordinatesNextSpot) {
         int one_step;

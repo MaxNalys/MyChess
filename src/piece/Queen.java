@@ -4,7 +4,7 @@ import utils.Coordinates;
 
 public class Queen extends Piece {
     public Queen(boolean white) {
-        super(white, "♕");
+        super(white,PieceName.QUEEN);
     }
 
     @Override
@@ -14,7 +14,10 @@ public class Queen extends Piece {
 
     public boolean isMovingStraight(Coordinates coordinatesPiece, Coordinates coordinatesNextSpot) {
         if (coordinatesPiece.getX() == coordinatesNextSpot.getX()) {
-            return coordinatesPiece.getX() > coordinatesNextSpot.getX() || coordinatesNextSpot.getY() > coordinatesPiece.getX();
+            return coordinatesPiece.getY() > coordinatesNextSpot.getY() || coordinatesNextSpot.getY() > coordinatesPiece.getY();
+        }
+        if (coordinatesPiece.getY() == coordinatesNextSpot.getY()) {
+            return coordinatesPiece.getX() > coordinatesNextSpot.getX() || coordinatesNextSpot.getX() > coordinatesPiece.getX();
         }
         return false;
     }

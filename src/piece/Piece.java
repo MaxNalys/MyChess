@@ -5,23 +5,22 @@ import utils.Coordinates;
 public abstract class Piece {
 
     private final boolean isWhite;
-    private final String name;
+    private PieceName identifiers;
 
-    Piece(boolean isWhite, String name) {
+    Piece(boolean isWhite, PieceName identifiers) {
         this.isWhite = isWhite;
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
+        this.identifiers = identifiers;
     }
 
     public boolean isWhite() {
         return isWhite;
     }
 
-    public abstract boolean canMoveTo(Coordinates coordinatesPiece,Coordinates coordinatesNextSpot);
+    public abstract boolean canMoveTo(Coordinates coordinatesPiece, Coordinates coordinatesNextSpot);
 
+    public PieceName getIdentifiers() {
+        return identifiers;
+    }
 
 }
 
