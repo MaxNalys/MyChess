@@ -115,9 +115,12 @@ public class ChessGame {
 
     public void starGame() {
         Scanner scanner = new Scanner(System.in);
-        if(!isWhiteKingInCheck()&&)
         moveTo("e2-e4");
-        moveTo("d7-d5");
+        moveTo("e7-e5");
+        moveTo("d8-e7");
+
+
+
         PrintBoard.printBoard(board);
 
         // TODO add cycle here
@@ -129,9 +132,38 @@ public class ChessGame {
     private void moveTo(String move) {
         Coordinates[] coordinates = Parser.parseInput(move);
         if (board.getPieceFromStartPosition(move).canMoveTo(coordinates[0], coordinates[1]) && checkBasicRules(move)) {
+            if (isKingInCheck(move)) {
+                System.out.println("Check");
+            }
             replacePiece(move);
 
         }
+    }
+
+    public boolean isKingInCheck(String move) {
+        Coordinates[] coordinates = Parser.parseInput(move);
+        King kingInCheck;
+        LinkedList<Piece> pieceLinkedList;
+        if (board.getPieceFromStartPosition(move).isWhite()) {
+            kingInCheck = blackKing;
+            pieceLinkedList = whitePieces;
+        } else {
+            kingInCheck = whiteKing;
+            pieceLinkedList = blackPieces;
+        }
+
+        for (Piece curPiece : pieceLinkedList) {
+            if (curPiece == board.getPieceFromStartPosition(move)) {
+                if (curPiece.canMoveTo(coordinates[1], board.getPieceCoordinates(kingInCheck)) && determineAnyPiecesBetweenMoves(Parser.convertCoordinatesToMove(coordinates[1], board.getPieceCoordinates(kingInCheck)))) {
+                    return true;
+                }
+            } else if (curPiece.canMoveTo(board.getPieceCoordinates(curPiece), board.getPieceCoordinates(kingInCheck)) && determineAnyPiecesBetweenMoves(Parser.convertCoordinatesToMove(board.getPieceCoordinates(curPiece), board.getPieceCoordinates(kingInCheck)))) {
+                return true;
+            }
+        }
+
+        return false;
+
     }
 
     private void replacePiece(String move) {
@@ -173,6 +205,9 @@ public class ChessGame {
         switch (board.getPieceFromStartPosition(move).getIdentifiers()) {
             case PAWN:
                 int value;
+                if (Math.abs(coordinates[0].getY() - coordinates[1].getY()) == 1) {
+                    return true;
+                }
                 if (board.getPieceFromStartPosition(move).isWhite()) {
                     value = 1;
                 } else {
@@ -266,28 +301,5 @@ public class ChessGame {
         return false;
     }
 
-    public boolean gameIsOver() {
-        return false;
-    }
 
-    public boolean isBlackKingInCheck() {
-        for (Piece currPiece : whitePieces) {
-            if (currPiece.canMoveTo(board.getPieceCoordinates(currPiece), board.getPieceCoordinates(blackKing)) && determineAnyPiecesBetweenMoves(Parser.convertCoordinatesToMove(board.getPieceCoordinates(currPiece), board.getPieceCoordinates(blackKing)))) {
-                System.out.println("Check");
-                return true;
-            }
-        }
-        return false;
-    }
-
-
-    public boolean isWhiteKingInCheck() {
-        for (Piece currPiece : blackPieces) {
-            if (currPiece.canMoveTo(board.getPieceCoordinates(currPiece), board.getPieceCoordinates(whiteKing)) && determineAnyPiecesBetweenMoves(Parser.convertCoordinatesToMove(board.getPieceCoordinates(currPiece), board.getPieceCoordinates(whiteKing)))) {
-                System.out.println("Check");
-                return true;
-            }
-        }
-        return false;
-    }
 }

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Parser {
+    //створити дві мапи
      public static final Map<Character, Integer> algebraicChessNotationMap;
      static {
          algebraicChessNotationMap=new HashMap<>();
