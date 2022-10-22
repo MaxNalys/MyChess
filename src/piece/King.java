@@ -5,15 +5,25 @@ import utils.Coordinates;
 public class King extends Piece {
 
     private boolean hasMoved;
+    private boolean isCheck;
 
     public King(boolean white) {
         super(white,PieceName.KING);
         this.hasMoved = false;
+        this.isCheck=false;
     }
 
     @Override
     public boolean canMoveTo(Coordinates coordinatesPiece, Coordinates coordinatesNextSpot) {
         return kingMovement(coordinatesPiece, coordinatesNextSpot);
+    }
+
+    public boolean isCheck() {
+        return isCheck;
+    }
+
+    public void setCheck(boolean check) {
+        isCheck = check;
     }
 
     public boolean kingMovement(Coordinates coordinatesPiece, Coordinates coordinatesNextSpot) {

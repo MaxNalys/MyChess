@@ -36,10 +36,6 @@ public class Board {
         board[coordinates[1].getX()][coordinates[1].getY()] = getPieceFromStartPosition(move);
     }
 
-    public void deletePieceByCoordinates(Coordinates coordinates) {
-        board[coordinates.getX()][coordinates.getY()] = null;
-    }
-
     public Coordinates getPieceCoordinates(Piece piece) {
         for (int i = 0; i < PIECE_BOARD_SIZE; i++) {
             for (int j = 0; j < PIECE_BOARD_SIZE; j++) {
@@ -52,5 +48,4 @@ public class Board {
         }
         return null;
     }
-
 }

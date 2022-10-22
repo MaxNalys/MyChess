@@ -18,10 +18,15 @@ public class Bishop extends Piece {
         int xTotal = Math.abs(coordinatesNextSpot.getX() - coordinatesPiece.getX());
         int yTotal = Math.abs(coordinatesNextSpot.getY() - coordinatesPiece.getY());
         if (xTotal == yTotal) {
-            if (coordinatesNextSpot.getX() < coordinatesPiece.getX() || coordinatesNextSpot.getX() > coordinatesPiece.getX()) {
+            if (coordinatesNextSpot.getX() < coordinatesPiece.getX()) {
                 return true;
-            } else
-                return coordinatesNextSpot.getY() < coordinatesPiece.getY() || coordinatesNextSpot.getY() > coordinatesPiece.getY();
+            } else if (coordinatesNextSpot.getX() > coordinatesPiece.getX()) {
+                return true;
+            }
+
+            if (coordinatesNextSpot.getY() < coordinatesPiece.getY()) {
+                return true;
+            } else return coordinatesNextSpot.getY() > coordinatesPiece.getY();
         }
         return false;
     }

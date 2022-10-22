@@ -2,6 +2,7 @@
 import board.Board;
 import board.PrintBoard;
 import piece.*;
+import utils.ColourGameChange;
 import utils.Coordinates;
 import utils.Parser;
 
@@ -9,7 +10,7 @@ import java.util.LinkedList;
 import java.util.Scanner;
 
 public class ChessGame {
-    private boolean playingForWhite;
+    private ColourGameChange colourGameChange;
     private King blackKing;
     private King whiteKing;
     private Board board;
@@ -24,15 +25,10 @@ public class ChessGame {
         blackPieces = new LinkedList<Piece>();
         whitePieces = new LinkedList<Piece>();
         setUp();
-        chooseColour();
+        colourGameChange = new ColourGameChange();
 
     }
 
-    public void chooseColour() {
-        //true-white
-        //false-black
-        this.playingForWhite = false;
-    }
 
     public void setUp() {
         addBishop(true, 0, 2);
@@ -77,6 +73,13 @@ public class ChessGame {
         }
     }
 
+    public King getBlackKing() {
+        return blackKing;
+    }
+
+    public King getWhiteKing() {
+        return whiteKing;
+    }
 
     private void addPawn(boolean isWhite, int x, int y) {
         Pawn pawn = new Pawn(isWhite);
@@ -115,55 +118,46 @@ public class ChessGame {
 
     public void starGame() {
         Scanner scanner = new Scanner(System.in);
-        moveTo("e2-e4");
-        moveTo("e7-e5");
-        moveTo("d8-e7");
 
 
+        for (int i = 1; i <= 100; i++) {
+            PrintBoard.printBoard(board, colourGameChange.isWhite());
+            System.out.println();
+            String move = scanner.next();
+            moveTo(move);
 
-        PrintBoard.printBoard(board);
-
-        // TODO add cycle here
-        // Start implementing this
-
+            colourGameChange.gameChangeColour();
+            System.out.println();
+        }
 
     }
 
     private void moveTo(String move) {
         Coordinates[] coordinates = Parser.parseInput(move);
         if (board.getPieceFromStartPosition(move).canMoveTo(coordinates[0], coordinates[1]) && checkBasicRules(move)) {
-            if (isKingInCheck(move)) {
-                System.out.println("Check");
-            }
             replacePiece(move);
-
         }
     }
 
-    public boolean isKingInCheck(String move) {
-        Coordinates[] coordinates = Parser.parseInput(move);
+    public boolean isKingInCheck() {
         King kingInCheck;
         LinkedList<Piece> pieceLinkedList;
-        if (board.getPieceFromStartPosition(move).isWhite()) {
-            kingInCheck = blackKing;
+        if (colourGameChange.isWhite()) {
+            kingInCheck = getBlackKing();
             pieceLinkedList = whitePieces;
         } else {
-            kingInCheck = whiteKing;
+            kingInCheck = getWhiteKing();
             pieceLinkedList = blackPieces;
         }
 
         for (Piece curPiece : pieceLinkedList) {
-            if (curPiece == board.getPieceFromStartPosition(move)) {
-                if (curPiece.canMoveTo(coordinates[1], board.getPieceCoordinates(kingInCheck)) && determineAnyPiecesBetweenMoves(Parser.convertCoordinatesToMove(coordinates[1], board.getPieceCoordinates(kingInCheck)))) {
-                    return true;
-                }
-            } else if (curPiece.canMoveTo(board.getPieceCoordinates(curPiece), board.getPieceCoordinates(kingInCheck)) && determineAnyPiecesBetweenMoves(Parser.convertCoordinatesToMove(board.getPieceCoordinates(curPiece), board.getPieceCoordinates(kingInCheck)))) {
+            if (curPiece.canMoveTo(board.getPieceCoordinates(curPiece), board.getPieceCoordinates(kingInCheck)) && determineAnyPiecesBetweenMoves(Parser.convertCoordinatesToMove(board.getPieceCoordinates(curPiece), board.getPieceCoordinates(kingInCheck)))) {
+                kingInCheck.setCheck(true);
                 return true;
             }
         }
-
+        kingInCheck.setCheck(false);
         return false;
-
     }
 
     private void replacePiece(String move) {
@@ -238,8 +232,8 @@ public class ChessGame {
             xStart = coordinates[1].getX();
             xFinish = coordinates[0].getX();
         } else if (coordinates[1].getX() > coordinates[0].getX()) {
-            xStart = coordinates[1].getX();
-            xFinish = coordinates[0].getX();
+            xStart = coordinates[0].getX();
+            xFinish = coordinates[1].getX();
         }
 
         if (coordinates[1].getY() < coordinates[0].getY()) {

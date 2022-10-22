@@ -21,7 +21,15 @@ public class PrintBoard {
         pieceIdentifiers.put(PieceName.ROOK, "♖");
     }
 
-    public static void printBoard(Board board) {
+    public static void printBoard(Board board, boolean isWhite) {
+        if (isWhite) {
+            printWhiteBoard(board);
+        } else {
+            printBlackBoard(board);
+        }
+    }
+
+    public static void printBlackBoard(Board board) {
         int count;
         for (int i = 0; i < Board.PIECE_BOARD_SIZE; i++) {
             count = i;
@@ -42,5 +50,27 @@ public class PrintBoard {
             System.out.println("");
         }
         System.out.print(WHITE_BOLD_BRIGHT + "    h   g   f   e   d   c   b   a");
+    }
+
+    public static void printWhiteBoard(Board board) {
+        int count = 9;
+        for (int i = Board.PIECE_BOARD_SIZE - 1; i >= 0; i--) {
+            for (int j = Board.PIECE_BOARD_SIZE - 1; j >= 0; j--) {
+                if (j == 7) {
+                    System.out.print(WHITE_BOLD_BRIGHT + (--count));
+                }
+                if (board.getBoard()[i][j] == null) {
+                    System.out.print(MAGENTA + "\t☐");
+                } else {
+                    if (board.getBoard()[i][j].isWhite()) {
+                        System.out.print("\t" + WHITE_BOLD_BRIGHT + pieceIdentifiers.get(board.getBoard()[i][j].getIdentifiers()));
+                    } else {
+                        System.out.print("\t" + BLACK_BOLD_BRIGHT + pieceIdentifiers.get(board.getBoard()[i][j].getIdentifiers()));
+                    }
+                }
+            }
+            System.out.println("");
+        }
+        System.out.print(WHITE_BOLD_BRIGHT + "    a   b   c   d   e   f   g   h");
     }
 }

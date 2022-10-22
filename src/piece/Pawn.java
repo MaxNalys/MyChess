@@ -4,10 +4,10 @@ import utils.Coordinates;
 
 public class Pawn extends Piece {
 
-   public boolean isMoved;
+    public boolean isMoved;
 
     public Pawn(boolean white) {
-        super(white,PieceName.PAWN);
+        super(white, PieceName.PAWN);
         isMoved = false;
     }
 
@@ -36,11 +36,12 @@ public class Pawn extends Piece {
         }
 
         if (coordinatesNextSpot.getX() - coordinatesPiece.getX() == one_step) {
-            setMoved(true);
             if (coordinatesNextSpot.getY() == coordinatesPiece.getY()) {
+                setMoved(true);
                 return true;
             }
             if (Math.abs(coordinatesPiece.getY() - coordinatesNextSpot.getY()) == 1) {
+                setMoved(true);
                 return true;
             }
         } else if (!isMoved()) {

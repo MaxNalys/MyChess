@@ -18,10 +18,17 @@ public class Rook extends Piece {
 
     public boolean isMovingStraight(Coordinates coordinatesPiece, Coordinates coordinatesNextSpot) {
         if (coordinatesPiece.getX() == coordinatesNextSpot.getX()) {
-            return coordinatesPiece.getY() > coordinatesNextSpot.getY() || coordinatesNextSpot.getY() > coordinatesPiece.getY();
+            if (coordinatesPiece.getY() > coordinatesNextSpot.getY()) {
+                return true;
+            } else if (coordinatesNextSpot.getY() > coordinatesPiece.getY()) {
+                return true;
+            }
         }
+
         if (coordinatesPiece.getY() == coordinatesNextSpot.getY()) {
-            return coordinatesPiece.getX() > coordinatesNextSpot.getX() || coordinatesNextSpot.getX() > coordinatesPiece.getX();
+            if (coordinatesPiece.getX() > coordinatesNextSpot.getX()) {
+                return true;
+            } else return coordinatesNextSpot.getX() > coordinatesPiece.getX();
         }
         return false;
     }
