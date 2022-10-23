@@ -22,6 +22,14 @@ public class King extends Piece {
         return isCheck;
     }
 
+    public boolean hasMoved() {
+        return hasMoved;
+    }
+
+    public void setHasMoved(boolean hasMoved) {
+        this.hasMoved = hasMoved;
+    }
+
     public void setCheck(boolean check) {
         isCheck = check;
     }

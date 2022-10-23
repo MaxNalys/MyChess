@@ -118,25 +118,82 @@ public class ChessGame {
 
     public void starGame() {
         Scanner scanner = new Scanner(System.in);
-
-
-        for (int i = 1; i <= 100; i++) {
+      /*  for (int i = 1; i <= 100; i++) {
             PrintBoard.printBoard(board, colourGameChange.isWhite());
             System.out.println();
             String move = scanner.next();
             moveTo(move);
-
             colourGameChange.gameChangeColour();
             System.out.println();
         }
+
+       */
+        moveTo("e2-e4");
+        moveTo("g1-f3");
+        moveTo("g2-g3");
+        moveTo("f1-g2");
+        moveTo("e1-h1");
+        moveTo("b8-c6");
+        moveTo("b7-b6");
+        moveTo("c8-b7");
+        moveTo("d7-d6");
+        moveTo("d8-d7");
+        moveTo("e8-a8");
+        PrintBoard.printBoard(board, colourGameChange.isWhite());
 
     }
 
     private void moveTo(String move) {
         Coordinates[] coordinates = Parser.parseInput(move);
-        if (board.getPieceFromStartPosition(move).canMoveTo(coordinates[0], coordinates[1]) && checkBasicRules(move)) {
+        if (canCastling(move)) {
+            castlingMove(move);
+        } else if (board.getPieceFromStartPosition(move).canMoveTo(coordinates[0], coordinates[1]) && checkBasicRules(move)) {
             replacePiece(move);
         }
+    }
+
+    public void castlingMove(String move) {
+        Coordinates[] coordinates = Parser.parseInput(move);
+        if (isShortCastling(move)) {
+            placePiece(board.getPieceFromStartPosition(move), coordinates[0].getX(), 1);
+            deletePieceFromStartPosition(move);
+            placePiece(board.getPieceFromNextPosition(move), coordinates[0].getX(), 2);
+            deletePieceFromNextPosition(move);
+        } else {
+            placePiece(board.getPieceFromStartPosition(move), coordinates[0].getX(), 5);
+            deletePieceFromStartPosition(move);
+            placePiece(board.getPieceFromNextPosition(move), coordinates[0].getX(), 4);
+            deletePieceFromNextPosition(move);
+        }
+
+    }
+
+    public boolean canCastling(String move) {
+        Coordinates[] coordinates = Parser.parseInput(move);
+        if (board.getPieceFromStartPosition(move).getIdentifiers().equals(PieceName.KING) && board.getPieceFromNextPosition(move).getIdentifiers().equals(PieceName.ROOK)) {
+            if (isShortCastling(move)) {
+                for (int i = coordinates[0].getY() - 1; i > coordinates[1].getY(); i--) {
+                    if (board.getBoard()[coordinates[0].getX()][i] != null) {
+                        return false;
+                    }
+                }
+                return true;
+            } else {
+                for (int i = coordinates[0].getY() + 1; i < coordinates[1].getY(); i++) {
+                    if (board.getBoard()[coordinates[0].getX()][i] != null) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isShortCastling(String move) {
+        Coordinates[] coordinates = Parser.parseInput(move);
+        return coordinates[0].getY() - coordinates[1].getY() >= 0;
     }
 
     public boolean isKingInCheck() {
@@ -162,13 +219,18 @@ public class ChessGame {
 
     private void replacePiece(String move) {
         board.setPieceOnTheNextSpot(move);
-        deletePieceFromPosition(move);
+        deletePieceFromStartPosition(move);
     }
 
-    private void deletePieceFromPosition(String move) {
+    private void deletePieceFromStartPosition(String move) {
         Coordinates[] coordinates = Parser.parseInput(move);
         board.getBoard()[coordinates[0].getX()][coordinates[0].getY()] = null;
     }
+    private void deletePieceFromNextPosition(String move) {
+        Coordinates[] coordinates = Parser.parseInput(move);
+        board.getBoard()[coordinates[1].getX()][coordinates[1].getY()] = null;
+    }
+
 
 
     private boolean isWithinBoundsMove(String move) {

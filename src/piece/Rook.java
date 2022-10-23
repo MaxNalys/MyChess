@@ -16,6 +16,14 @@ public class Rook extends Piece {
         return isMovingStraight(coordinatesPiece, coordinatesNextSpot);
     }
 
+    public boolean hasMoved() {
+        return hasMoved;
+    }
+
+    public void setHasMoved(boolean hasMoved) {
+        this.hasMoved = hasMoved;
+    }
+
     public boolean isMovingStraight(Coordinates coordinatesPiece, Coordinates coordinatesNextSpot) {
         if (coordinatesPiece.getX() == coordinatesNextSpot.getX()) {
             if (coordinatesPiece.getY() > coordinatesNextSpot.getY()) {
@@ -32,5 +40,6 @@ public class Rook extends Piece {
         }
         return false;
     }
+
 
 }
