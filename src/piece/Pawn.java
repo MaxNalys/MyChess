@@ -27,7 +27,7 @@ public class Pawn extends Piece {
     public boolean pawnMovement(Coordinates coordinatesPiece, Coordinates coordinatesNextSpot) {
         int one_step;
         int two_step;
-        if (isWhite()) {
+        if (this.isWhite()) {
             one_step = 1;
             two_step = 2;
         } else {
@@ -39,14 +39,13 @@ public class Pawn extends Piece {
             if (coordinatesNextSpot.getY() == coordinatesPiece.getY()) {
                 setMoved(true);
                 return true;
-            }
-            if (Math.abs(coordinatesPiece.getY() - coordinatesNextSpot.getY()) == 1) {
+            } else if (Math.abs(coordinatesPiece.getY() - coordinatesNextSpot.getY()) == 1) {
                 setMoved(true);
                 return true;
             }
-        } else if (!isMoved()) {
-            setMoved(true);
-            if (coordinatesNextSpot.getX() - coordinatesPiece.getX() == two_step) {
+        } else if (coordinatesNextSpot.getX() - coordinatesPiece.getX() == two_step) {
+            if (!isMoved()) {
+                setMoved(true);
                 return coordinatesNextSpot.getY() == coordinatesPiece.getY();
             }
         }

@@ -31,38 +31,46 @@ public class ChessGame {
 
 
     public void setUp() {
-        addBishop(true, 0, 2);
-        addBishop(true, 0, 5);
-        addKnight(true, 0, 1);
-        addKnight(true, 0, 6);
-        addRook(true, 0, 0);
-        addRook(true, 0, 7);
-        addQueen(true, 0, 4);
-        addPawn(true, 1, 0);
-        addPawn(true, 1, 1);
-        addPawn(true, 1, 2);
-        addPawn(true, 1, 3);
-        addPawn(true, 1, 4);
-        addPawn(true, 1, 5);
-        addPawn(true, 1, 6);
-        addPawn(true, 1, 7);
-        addBishop(false, 7, 2);
-        addBishop(false, 7, 5);
-        addKnight(false, 7, 1);
-        addKnight(false, 7, 6);
-        addRook(false, 7, 0);
-        addRook(false, 7, 7);
-        addQueen(false, 7, 4);
-        addPawn(false, 6, 0);
-        addPawn(false, 6, 1);
-        addPawn(false, 6, 2);
-        addPawn(false, 6, 3);
-        addPawn(false, 6, 4);
-        addPawn(false, 6, 5);
-        addPawn(false, 6, 6);
-        addPawn(false, 6, 7);
-        placePiece(blackKing, 7, 3);
-        placePiece(whiteKing, 0, 3);
+        addBishop(true, "c1");
+        addBishop(true, "f1");
+        addKnight(true, "b1");
+        addKnight(true, "g1");
+        addRook(true, "a1");
+        addRook(true, "h1");
+        addQueen(true, "d1");
+        addPawn(true, "a2");
+        addPawn(true, "b2");
+        addPawn(true, "c2");
+        addPawn(true, "d2");
+        addPawn(true, "e2");
+        addPawn(true, "f2");
+        addPawn(true, "g2");
+        addPawn(true, "h2");
+        addBishop(false, "c8");
+        addBishop(false, "f8");
+        addKnight(false, "b8");
+        addKnight(false, "g8");
+        addRook(false, "a8");
+        addRook(false, "h8");
+        addQueen(false, "d8");
+        addPawn(false, "a7");
+        addPawn(false, "b7");
+        addPawn(false, "c7");
+        addPawn(false, "d7");
+        addPawn(false, "e7");
+        addPawn(false, "f7");
+        addPawn(false, "g7");
+        addPawn(false, "h7");
+        addKing(whiteKing, "e1");
+        addKing(blackKing, "e8");
+    }
+
+    public void deletePieceFromList(Piece piece) {
+        if (whitePieces.contains(piece)) {
+            whitePieces.remove(piece);
+        } else {
+            blackPieces.remove(piece);
+        }
     }
 
     private void pieceColorHelper(Piece piece, boolean isWhite) {
@@ -73,42 +81,45 @@ public class ChessGame {
         }
     }
 
-    public King getBlackKing() {
-        return blackKing;
+    private void addKing(King king, String move) {
+        Coordinates coordinates = Parser.convertFistPartOfMove(move);
+        placePiece(king, coordinates.getX(), coordinates.getY());
+        pieceColorHelper(king, king.isWhite());
     }
 
-    public King getWhiteKing() {
-        return whiteKing;
-    }
-
-    private void addPawn(boolean isWhite, int x, int y) {
+    private void addPawn(boolean isWhite, String move) {
+        Coordinates coordinates = Parser.convertFistPartOfMove(move);
         Pawn pawn = new Pawn(isWhite);
-        placePiece(pawn, x, y);
+        placePiece(pawn, coordinates.getX(), coordinates.getY());
         pieceColorHelper(pawn, isWhite);
     }
 
 
-    private void addRook(boolean isWhite, int x, int y) {
+    private void addRook(boolean isWhite, String move) {
+        Coordinates coordinates = Parser.convertFistPartOfMove(move);
         Rook rook = new Rook(isWhite);
-        placePiece(rook, x, y);
+        placePiece(rook, coordinates.getX(), coordinates.getY());
         pieceColorHelper(rook, isWhite);
     }
 
-    private void addBishop(boolean isWhite, int x, int y) {
+    private void addBishop(boolean isWhite, String move) {
+        Coordinates coordinates = Parser.convertFistPartOfMove(move);
         Bishop bishop = new Bishop(isWhite);
-        placePiece(bishop, x, y);
+        placePiece(bishop, coordinates.getX(), coordinates.getY());
         pieceColorHelper(bishop, isWhite);
     }
 
-    private void addQueen(boolean isWhite, int x, int y) {
+    private void addQueen(boolean isWhite, String move) {
+        Coordinates coordinates = Parser.convertFistPartOfMove(move);
         Queen queen = new Queen(isWhite);
-        placePiece(queen, x, y);
+        placePiece(queen, coordinates.getX(), coordinates.getY());
         pieceColorHelper(queen, isWhite);
     }
 
-    private void addKnight(boolean isWhite, int x, int y) {
+    private void addKnight(boolean isWhite, String move) {
+        Coordinates coordinates = Parser.convertFistPartOfMove(move);
         Knight knight = new Knight(isWhite);
-        placePiece(knight, x, y);
+        placePiece(knight, coordinates.getX(), coordinates.getY());
         pieceColorHelper(knight, isWhite);
     }
 
@@ -118,28 +129,18 @@ public class ChessGame {
 
     public void starGame() {
         Scanner scanner = new Scanner(System.in);
-      /*  for (int i = 1; i <= 100; i++) {
+        for (int i = 1; i <= 100; i++) {
             PrintBoard.printBoard(board, colourGameChange.isWhite());
             System.out.println();
             String move = scanner.next();
             moveTo(move);
+            if (isKingInCheck()) {
+                System.out.println("check");
+            }
             colourGameChange.gameChangeColour();
             System.out.println();
         }
 
-       */
-        moveTo("e2-e4");
-        moveTo("g1-f3");
-        moveTo("g2-g3");
-        moveTo("f1-g2");
-        moveTo("e1-h1");
-        moveTo("b8-c6");
-        moveTo("b7-b6");
-        moveTo("c8-b7");
-        moveTo("d7-d6");
-        moveTo("d8-d7");
-        moveTo("e8-a8");
-        PrintBoard.printBoard(board, colourGameChange.isWhite());
 
     }
 
@@ -148,6 +149,9 @@ public class ChessGame {
         if (canCastling(move)) {
             castlingMove(move);
         } else if (board.getPieceFromStartPosition(move).canMoveTo(coordinates[0], coordinates[1]) && checkBasicRules(move)) {
+            if (board.getPieceFromNextPosition(move) != null) {
+                deletePieceFromList(board.getPieceFromNextPosition(move));
+            }
             replacePiece(move);
         }
     }
@@ -197,23 +201,21 @@ public class ChessGame {
     }
 
     public boolean isKingInCheck() {
-        King kingInCheck;
         LinkedList<Piece> pieceLinkedList;
+        King king;
         if (colourGameChange.isWhite()) {
-            kingInCheck = getBlackKing();
             pieceLinkedList = whitePieces;
+            king = blackKing;
         } else {
-            kingInCheck = getWhiteKing();
             pieceLinkedList = blackPieces;
+            king = whiteKing;
         }
 
         for (Piece curPiece : pieceLinkedList) {
-            if (curPiece.canMoveTo(board.getPieceCoordinates(curPiece), board.getPieceCoordinates(kingInCheck)) && determineAnyPiecesBetweenMoves(Parser.convertCoordinatesToMove(board.getPieceCoordinates(curPiece), board.getPieceCoordinates(kingInCheck)))) {
-                kingInCheck.setCheck(true);
+            if (curPiece.canMoveTo(board.getPieceCoordinates(curPiece), board.getPieceCoordinates(king)) && determineAnyPiecesBetweenMoves(Parser.convertCoordinatesToMove(board.getPieceCoordinates(curPiece), board.getPieceCoordinates(king)))) {
                 return true;
             }
         }
-        kingInCheck.setCheck(false);
         return false;
     }
 
@@ -226,11 +228,11 @@ public class ChessGame {
         Coordinates[] coordinates = Parser.parseInput(move);
         board.getBoard()[coordinates[0].getX()][coordinates[0].getY()] = null;
     }
+
     private void deletePieceFromNextPosition(String move) {
         Coordinates[] coordinates = Parser.parseInput(move);
         board.getBoard()[coordinates[1].getX()][coordinates[1].getY()] = null;
     }
-
 
 
     private boolean isWithinBoundsMove(String move) {
