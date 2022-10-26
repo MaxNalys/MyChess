@@ -6,7 +6,7 @@ import utils.Coordinates;
 public class Bishop extends Piece {
 
     public Bishop(boolean white) {
-        super(white,PieceName.BISHOP);
+        super(white, PieceName.BISHOP,false);
     }
 
     @Override

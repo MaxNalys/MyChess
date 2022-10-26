@@ -4,7 +4,7 @@ import utils.Coordinates;
 
 public class Queen extends Piece {
     public Queen(boolean white) {
-        super(white, PieceName.QUEEN);
+        super(white, PieceName.QUEEN,false);
     }
 
     @Override
@@ -41,7 +41,9 @@ public class Queen extends Piece {
 
             if (coordinatesNextSpot.getY() < coordinatesPiece.getY()) {
                 return true;
-            } else return coordinatesNextSpot.getY() > coordinatesPiece.getY();
+            } else if( coordinatesNextSpot.getY() > coordinatesPiece.getY()){
+                return true;
+            }
         }
         return false;
     }

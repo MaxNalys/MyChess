@@ -4,19 +4,9 @@ import utils.Coordinates;
 
 public class Pawn extends Piece {
 
-    public boolean isMoved;
 
     public Pawn(boolean white) {
-        super(white, PieceName.PAWN);
-        isMoved = false;
-    }
-
-    public boolean isMoved() {
-        return isMoved;
-    }
-
-    public void setMoved(boolean moved) {
-        isMoved = moved;
+        super(white, PieceName.PAWN,false);
     }
 
     @Override
@@ -37,15 +27,10 @@ public class Pawn extends Piece {
 
         if (coordinatesNextSpot.getX() - coordinatesPiece.getX() == one_step) {
             if (coordinatesNextSpot.getY() == coordinatesPiece.getY()) {
-                setMoved(true);
                 return true;
-            } else if (Math.abs(coordinatesPiece.getY() - coordinatesNextSpot.getY()) == 1) {
-                setMoved(true);
-                return true;
-            }
+            } else return Math.abs(coordinatesPiece.getY() - coordinatesNextSpot.getY()) == 1;
         } else if (coordinatesNextSpot.getX() - coordinatesPiece.getX() == two_step) {
-            if (!isMoved()) {
-                setMoved(true);
+            if (!hasMoved()) {
                 return coordinatesNextSpot.getY() == coordinatesPiece.getY();
             }
         }

@@ -5,7 +5,7 @@ import utils.Coordinates;
 public class Knight extends Piece {
 
     public Knight(boolean white) {
-        super(white, PieceName.KNIGHT);
+        super(white, PieceName.KNIGHT,false);
     }
 
     @Override

@@ -4,13 +4,11 @@ import utils.Coordinates;
 
 public class King extends Piece {
 
-    private boolean hasMoved;
     private boolean isCheck;
 
     public King(boolean white) {
-        super(white,PieceName.KING);
-        this.hasMoved = false;
-        this.isCheck=false;
+        super(white, PieceName.KING,false);
+        this.isCheck = false;
     }
 
     @Override
@@ -18,20 +16,12 @@ public class King extends Piece {
         return kingMovement(coordinatesPiece, coordinatesNextSpot);
     }
 
-    public boolean isCheck() {
-        return isCheck;
-    }
-
-    public boolean hasMoved() {
-        return hasMoved;
-    }
-
-    public void setHasMoved(boolean hasMoved) {
-        this.hasMoved = hasMoved;
-    }
-
     public void setCheck(boolean check) {
         isCheck = check;
+    }
+
+    public boolean isCheck() {
+        return isCheck;
     }
 
     public boolean kingMovement(Coordinates coordinatesPiece, Coordinates coordinatesNextSpot) {

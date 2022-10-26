@@ -4,24 +4,13 @@ import utils.Coordinates;
 
 public class Rook extends Piece {
 
-    private boolean hasMoved;
-
     public Rook(boolean white) {
-        super(white,PieceName.ROOK);
-        this.hasMoved = false;
-
+        super(white, PieceName.ROOK,false);
     }
+
     @Override
     public boolean canMoveTo(Coordinates coordinatesPiece, Coordinates coordinatesNextSpot) {
         return isMovingStraight(coordinatesPiece, coordinatesNextSpot);
-    }
-
-    public boolean hasMoved() {
-        return hasMoved;
-    }
-
-    public void setHasMoved(boolean hasMoved) {
-        this.hasMoved = hasMoved;
     }
 
     public boolean isMovingStraight(Coordinates coordinatesPiece, Coordinates coordinatesNextSpot) {

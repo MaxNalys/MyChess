@@ -6,6 +6,7 @@ import utils.ColourGameChange;
 import utils.Coordinates;
 import utils.Parser;
 
+import javax.print.DocFlavor;
 import java.util.LinkedList;
 import java.util.Scanner;
 
@@ -129,32 +130,120 @@ public class ChessGame {
 
     public void starGame() {
         Scanner scanner = new Scanner(System.in);
-        for (int i = 1; i <= 100; i++) {
+        boolean continueGame = true;
+        King king;
+        while (continueGame) {
+          
+            if (colourGameChange.isWhite()) {
+                king = whiteKing;
+            } else {
+                king = blackKing;
+            }
             PrintBoard.printBoard(board, colourGameChange.isWhite());
             System.out.println();
             String move = scanner.next();
-            moveTo(move);
+            if (king.isCheck()) {
+                moveTo(move);
+                if (!checkMovement()) {
+                    System.out.println("ERROR");
+                    return;
+                }
+            } else {
+                moveTo(move);
+            }
             if (isKingInCheck()) {
                 System.out.println("check");
             }
             colourGameChange.gameChangeColour();
             System.out.println();
         }
+    }
 
+    public boolean checkMovement() {
+        colourGameChange.gameChangeColour();
+        if (isKingInCheck()) {
+            return false;
+        }
+        colourGameChange.gameChangeColour();
+        return true;
+    }
 
+    public boolean isGameOver() {
+        if (isCheckMate()) {
+            System.out.println("CheckMate");
+            return true;
+        } else if (isStaleMate()) {
+            System.out.println("StaleMate");
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isCheckMate() {
+        King king;
+        LinkedList<Piece> linkedList;
+        if (colourGameChange.isWhite()) {
+            linkedList = whitePieces;
+            king = whiteKing;
+        } else {
+            linkedList = blackPieces;
+            king = blackKing;
+        }
+        if (!king.isCheck()) {
+            return false;
+        }
+        for (int i = 0; i < Board.PIECE_BOARD_SIZE; i++) {
+            for (int j = 0; j < Board.PIECE_BOARD_SIZE; j++) {
+                Coordinates coordinates = new Coordinates(i, j);
+                for (Piece piece : linkedList) {
+                    if (piece.canMoveTo(board.getPieceCoordinates(piece), coordinates) && determineAnyPiecesBetweenMoves(Parser.convertCoordinatesToMove(board.getPieceCoordinates(piece), coordinates))) {
+                        replacePiece(Parser.convertCoordinatesToMove(board.getPieceCoordinates(piece), coordinates));
+                        if (checkMovement()) {
+                            deletePieceFromNextPosition(Parser.convertCoordinatesToMove(board.getPieceCoordinates(piece), coordinates));
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean isStaleMate() {
+        LinkedList<Piece> linkedList;
+        if (colourGameChange.isWhite()) {
+            linkedList = whitePieces;
+        } else {
+            linkedList = blackPieces;
+        }
+        for (int i = 0; i < Board.PIECE_BOARD_SIZE; i++) {
+            for (int j = 0; j < Board.PIECE_BOARD_SIZE; j++) {
+                Coordinates coordinates = new Coordinates(i, j);
+                for (Piece piece : linkedList) {
+                    if (piece.canMoveTo(board.getPieceCoordinates(piece), coordinates) && determineAnyPiecesBetweenMoves(Parser.convertCoordinatesToMove(board.getPieceCoordinates(piece), coordinates))) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     private void moveTo(String move) {
         Coordinates[] coordinates = Parser.parseInput(move);
         if (canCastling(move)) {
+            board.getPieceFromStartPosition(move).setMoved(true);
+            board.getPieceFromNextPosition(move).setMoved(true);
             castlingMove(move);
         } else if (board.getPieceFromStartPosition(move).canMoveTo(coordinates[0], coordinates[1]) && checkBasicRules(move)) {
             if (board.getPieceFromNextPosition(move) != null) {
                 deletePieceFromList(board.getPieceFromNextPosition(move));
             }
+            board.getPieceFromStartPosition(move).setMoved(true);
             replacePiece(move);
         }
     }
+
 
     public void castlingMove(String move) {
         Coordinates[] coordinates = Parser.parseInput(move);
@@ -172,20 +261,54 @@ public class ChessGame {
 
     }
 
+    public boolean isCastling(String move) {
+        if (board.getPieceFromNextPosition(move) != null) {
+            return board.getPieceFromStartPosition(move).getIdentifiers().equals(PieceName.KING) && board.getPieceFromNextPosition(move).getIdentifiers().equals(PieceName.ROOK);
+        }
+        return false;
+    }
+
     public boolean canCastling(String move) {
         Coordinates[] coordinates = Parser.parseInput(move);
-        if (board.getPieceFromStartPosition(move).getIdentifiers().equals(PieceName.KING) && board.getPieceFromNextPosition(move).getIdentifiers().equals(PieceName.ROOK)) {
+        LinkedList<Piece> pieceLinkedList;
+
+        if (!colourGameChange.isWhite()) {
+            pieceLinkedList = whitePieces;
+        } else {
+            pieceLinkedList = blackPieces;
+        }
+
+        if (isKingInCheck()) {
+            return false;
+        }
+
+        if (isCastling(move)) {
+            if (board.getPieceFromStartPosition(move).hasMoved() || board.getPieceFromNextPosition(move).hasMoved()) {
+                return false;
+            }
             if (isShortCastling(move)) {
                 for (int i = coordinates[0].getY() - 1; i > coordinates[1].getY(); i--) {
-                    if (board.getBoard()[coordinates[0].getX()][i] != null) {
-                        return false;
+                    Coordinates newCoordinates = new Coordinates(coordinates[0].getX(), i);
+                    for (Piece curPiece : pieceLinkedList) {
+                        if (board.getBoard()[coordinates[0].getX()][i] != null) {
+                            return false;
+                        }
+                        if (curPiece.canMoveTo(board.getPieceCoordinates(curPiece), newCoordinates) && determineAnyPiecesBetweenMoves(Parser.convertCoordinatesToMove(board.getPieceCoordinates(curPiece), newCoordinates))) {
+                            return false;
+                        }
                     }
                 }
                 return true;
             } else {
                 for (int i = coordinates[0].getY() + 1; i < coordinates[1].getY(); i++) {
-                    if (board.getBoard()[coordinates[0].getX()][i] != null) {
-                        return false;
+                    Coordinates newCoordinates = new Coordinates(coordinates[0].getX(), i);
+                    for (Piece curPiece : pieceLinkedList) {
+                        if (board.getBoard()[coordinates[0].getX()][i] != null) {
+                            return false;
+                        }
+                        if (curPiece.canMoveTo(board.getPieceCoordinates(curPiece), newCoordinates) && determineAnyPiecesBetweenMoves(Parser.convertCoordinatesToMove(board.getPieceCoordinates(curPiece), newCoordinates))) {
+                            return false;
+                        }
                     }
                 }
                 return true;
@@ -213,9 +336,11 @@ public class ChessGame {
 
         for (Piece curPiece : pieceLinkedList) {
             if (curPiece.canMoveTo(board.getPieceCoordinates(curPiece), board.getPieceCoordinates(king)) && determineAnyPiecesBetweenMoves(Parser.convertCoordinatesToMove(board.getPieceCoordinates(curPiece), board.getPieceCoordinates(king)))) {
+                king.setCheck(true);
                 return true;
             }
         }
+        king.setCheck(false);
         return false;
     }
 
@@ -292,27 +417,33 @@ public class ChessGame {
         int yStart = 0;
         int xFinish = 1;
 
-        if (coordinates[1].getX() < coordinates[0].getX()) {
-            xStart = coordinates[1].getX();
-            xFinish = coordinates[0].getX();
-        } else if (coordinates[1].getX() > coordinates[0].getX()) {
-            xStart = coordinates[0].getX();
-            xFinish = coordinates[1].getX();
-        }
+        int xTotal = Math.abs(coordinates[1].getX() - coordinates[0].getX());
+        int yTotal = Math.abs(coordinates[1].getY() - coordinates[0].getY());
 
-        if (coordinates[1].getY() < coordinates[0].getY()) {
-            yStart = coordinates[1].getY();
-        } else if (coordinates[1].getY() > coordinates[0].getY()) {
-            yStart = coordinates[0].getY();
-        }
-        yStart++;
-        xStart++;
-        for (; xStart < xFinish; xStart++, yStart++) {
-            if (board.getPieceAt(xStart, yStart) != null) {
-                return false;
+        if (xTotal == yTotal) {
+            if (coordinates[1].getX() < coordinates[0].getX()) {
+                xStart = coordinates[1].getX();
+                xFinish = coordinates[0].getX();
+            } else if (coordinates[1].getX() > coordinates[0].getX()) {
+                xStart = coordinates[0].getX();
+                xFinish = coordinates[1].getX();
             }
+
+            if (coordinates[1].getY() < coordinates[0].getY()) {
+                yStart = coordinates[1].getY();
+            } else if (coordinates[1].getY() > coordinates[0].getY()) {
+                yStart = coordinates[0].getY();
+            }
+            yStart++;
+            xStart++;
+            for (; xStart < xFinish; xStart++, yStart++) {
+                if (board.getPieceAt(xStart, yStart) != null) {
+                    return false;
+                }
+            }
+            return true;
         }
-        return true;
+        return false;
     }
 
     private boolean lookForPiecesBetweenMovesForStraightMoves(String move) {
