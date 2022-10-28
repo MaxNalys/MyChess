@@ -127,13 +127,20 @@ public class ChessGame {
     private void placePiece(Piece piece, int x, int y) {
         board.getBoard()[x][y] = piece;
     }
+//король може ходити під шах
+// дама не дає діагональний шах на h4
+// мат
+// пат
+// перехід з пішака на якусь фігуру
+// exception
+
 
     public void starGame() {
-        Scanner scanner = new Scanner(System.in);
+      /*  Scanner scanner = new Scanner(System.in);
         boolean continueGame = true;
         King king;
         while (continueGame) {
-          
+
             if (colourGameChange.isWhite()) {
                 king = whiteKing;
             } else {
@@ -157,6 +164,25 @@ public class ChessGame {
             colourGameChange.gameChangeColour();
             System.out.println();
         }
+
+       */
+        moveTo("g2-g4");
+
+        colourGameChange.gameChangeColour();
+
+        moveTo("e7-e5");
+        colourGameChange.gameChangeColour();
+
+        moveTo("f2-f3");
+        colourGameChange.gameChangeColour();
+
+        moveTo("d8-h4");
+        if (isKingInCheck()) {
+            System.out.println("check");
+        }
+        colourGameChange.gameChangeColour();
+        PrintBoard.printBoard(board, colourGameChange.isWhite());
+
     }
 
     public boolean checkMovement() {
@@ -420,30 +446,31 @@ public class ChessGame {
         int xTotal = Math.abs(coordinates[1].getX() - coordinates[0].getX());
         int yTotal = Math.abs(coordinates[1].getY() - coordinates[0].getY());
 
-        if (xTotal == yTotal) {
-            if (coordinates[1].getX() < coordinates[0].getX()) {
-                xStart = coordinates[1].getX();
-                xFinish = coordinates[0].getX();
-            } else if (coordinates[1].getX() > coordinates[0].getX()) {
-                xStart = coordinates[0].getX();
-                xFinish = coordinates[1].getX();
-            }
-
-            if (coordinates[1].getY() < coordinates[0].getY()) {
-                yStart = coordinates[1].getY();
-            } else if (coordinates[1].getY() > coordinates[0].getY()) {
-                yStart = coordinates[0].getY();
-            }
-            yStart++;
-            xStart++;
-            for (; xStart < xFinish; xStart++, yStart++) {
-                if (board.getPieceAt(xStart, yStart) != null) {
-                    return false;
-                }
-            }
-            return true;
+        if (xTotal != yTotal) {
+            return false;
         }
-        return false;
+
+        if (coordinates[1].getX() < coordinates[0].getX()) {
+            xStart = coordinates[1].getX();
+            xFinish = coordinates[0].getX();
+        } else if (coordinates[1].getX() > coordinates[0].getX()) {
+            xStart = coordinates[0].getX();
+            xFinish = coordinates[1].getX();
+        }
+
+        if (coordinates[1].getY() < coordinates[0].getY()) {
+            yStart = coordinates[1].getY();
+        } else if (coordinates[1].getY() > coordinates[0].getY()) {
+            yStart = coordinates[0].getY();
+        }
+        yStart++;
+        xStart++;
+        for (; xStart < xFinish; xStart++, yStart++) {
+            if (board.getPieceAt(xStart, yStart) != null) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private boolean lookForPiecesBetweenMovesForStraightMoves(String move) {
