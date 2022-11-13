@@ -136,7 +136,7 @@ public class ChessGame {
 
 
     public void starGame() {
-      /*  Scanner scanner = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
         boolean continueGame = true;
         King king;
         while (continueGame) {
@@ -165,23 +165,7 @@ public class ChessGame {
             System.out.println();
         }
 
-       */
-        moveTo("g2-g4");
 
-        colourGameChange.gameChangeColour();
-
-        moveTo("e7-e5");
-        colourGameChange.gameChangeColour();
-
-        moveTo("f2-f3");
-        colourGameChange.gameChangeColour();
-
-        moveTo("d8-h4");
-        if (isKingInCheck()) {
-            System.out.println("check");
-        }
-        colourGameChange.gameChangeColour();
-        PrintBoard.printBoard(board, colourGameChange.isWhite());
 
     }
 
@@ -439,38 +423,61 @@ public class ChessGame {
 
     private boolean lookForPiecesBetweenMovesForDiagonalMoves(String move) {
         Coordinates[] coordinates = Parser.parseInput(move);
+        boolean isLeftToRightDiagonal = false;
         int xStart = 0;
         int yStart = 0;
         int xFinish = 1;
-
-        int xTotal = Math.abs(coordinates[1].getX() - coordinates[0].getX());
-        int yTotal = Math.abs(coordinates[1].getY() - coordinates[0].getY());
-
-        if (xTotal != yTotal) {
-            return false;
+//діагональ з ліва на право 0-7 0-7 або 7-0 7-0
+// діагональ з права на ліво 0-7 7-0 або 7-0 0-7
+        if (coordinates[0].getX() < coordinates[1].getX() && coordinates[0].getY() < coordinates[1].getY() || (coordinates[0].getX() > coordinates[1].getX() && coordinates[0].getY() > coordinates[1].getY())) {
+            isLeftToRightDiagonal = true;
         }
-
-        if (coordinates[1].getX() < coordinates[0].getX()) {
-            xStart = coordinates[1].getX();
-            xFinish = coordinates[0].getX();
-        } else if (coordinates[1].getX() > coordinates[0].getX()) {
-            xStart = coordinates[0].getX();
-            xFinish = coordinates[1].getX();
-        }
-
-        if (coordinates[1].getY() < coordinates[0].getY()) {
-            yStart = coordinates[1].getY();
-        } else if (coordinates[1].getY() > coordinates[0].getY()) {
-            yStart = coordinates[0].getY();
-        }
-        yStart++;
-        xStart++;
-        for (; xStart < xFinish; xStart++, yStart++) {
-            if (board.getPieceAt(xStart, yStart) != null) {
-                return false;
+        if (isLeftToRightDiagonal) {
+            if (coordinates[0].getX() < coordinates[1].getX()) {
+                xStart = coordinates[0].getX();
+                xFinish = coordinates[1].getX();
+            } else {
+                xStart = coordinates[1].getX();
+                xFinish = coordinates[0].getX();
             }
+            if (coordinates[0].getY() < coordinates[1].getY()) {
+                yStart = coordinates[0].getY();
+            } else {
+                yStart = coordinates[1].getY();
+            }
+            yStart++;
+            xStart++;
+            for (; xStart < xFinish; xStart++, yStart++) {
+                if (board.getPieceAt(xStart, yStart) != null) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            int increase=0;
+            int decrease=0;
+            if (coordinates[0].getX() < coordinates[1].getX()) {
+                increase = coordinates[0].getX();
+                xFinish = coordinates[1].getX();
+            } else {
+                decrease = coordinates[1].getX();
+                xFinish = coordinates[0].getX();
+            }
+
+            if (coordinates[0].getY() > coordinates[1].getY()) {
+                decrease = coordinates[0].getY();
+            } else {
+                increase = coordinates[1].getY();
+            }
+            decrease--;
+            increase++;
+            for(;decrease>xFinish|| increase<xFinish;decrease--,increase++){
+                if(board.getPieceAt(increase, decrease) != null){
+                    return false;
+                }
+            }
+            return true;
         }
-        return true;
     }
 
     private boolean lookForPiecesBetweenMovesForStraightMoves(String move) {

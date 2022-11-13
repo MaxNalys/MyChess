@@ -32,20 +32,7 @@ public class Queen extends Piece {
     public boolean isMovingDiagonal(Coordinates coordinatesPiece, Coordinates coordinatesNextSpot) {
         int xTotal = Math.abs(coordinatesNextSpot.getX() - coordinatesPiece.getX());
         int yTotal = Math.abs(coordinatesNextSpot.getY() - coordinatesPiece.getY());
-        if (xTotal == yTotal) {
-            if (coordinatesNextSpot.getX() < coordinatesPiece.getX()) {
-                return true;
-            } else if (coordinatesNextSpot.getX() > coordinatesPiece.getX()) {
-                return true;
-            }
-
-            if (coordinatesNextSpot.getY() < coordinatesPiece.getY()) {
-                return true;
-            } else if( coordinatesNextSpot.getY() > coordinatesPiece.getY()){
-                return true;
-            }
-        }
-        return false;
+        return xTotal == yTotal;
     }
 }
 
