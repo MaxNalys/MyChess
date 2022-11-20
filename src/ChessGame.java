@@ -138,106 +138,20 @@ public class ChessGame {
     public void starGame() {
         Scanner scanner = new Scanner(System.in);
         boolean continueGame = true;
-        King king;
         while (continueGame) {
-
-            if (colourGameChange.isWhite()) {
-                king = whiteKing;
-            } else {
-                king = blackKing;
-            }
             PrintBoard.printBoard(board, colourGameChange.isWhite());
             System.out.println();
             String move = scanner.next();
-            if (king.isCheck()) {
-                moveTo(move);
-                if (!checkMovement()) {
-                    System.out.println("ERROR");
-                    return;
-                }
-            } else {
-                moveTo(move);
-            }
+            moveTo(move);
             if (isKingInCheck()) {
                 System.out.println("check");
             }
             colourGameChange.gameChangeColour();
             System.out.println();
         }
-
-
-
     }
 
-    public boolean checkMovement() {
-        colourGameChange.gameChangeColour();
-        if (isKingInCheck()) {
-            return false;
-        }
-        colourGameChange.gameChangeColour();
-        return true;
-    }
 
-    public boolean isGameOver() {
-        if (isCheckMate()) {
-            System.out.println("CheckMate");
-            return true;
-        } else if (isStaleMate()) {
-            System.out.println("StaleMate");
-            return true;
-        }
-        return false;
-    }
-
-    public boolean isCheckMate() {
-        King king;
-        LinkedList<Piece> linkedList;
-        if (colourGameChange.isWhite()) {
-            linkedList = whitePieces;
-            king = whiteKing;
-        } else {
-            linkedList = blackPieces;
-            king = blackKing;
-        }
-        if (!king.isCheck()) {
-            return false;
-        }
-        for (int i = 0; i < Board.PIECE_BOARD_SIZE; i++) {
-            for (int j = 0; j < Board.PIECE_BOARD_SIZE; j++) {
-                Coordinates coordinates = new Coordinates(i, j);
-                for (Piece piece : linkedList) {
-                    if (piece.canMoveTo(board.getPieceCoordinates(piece), coordinates) && determineAnyPiecesBetweenMoves(Parser.convertCoordinatesToMove(board.getPieceCoordinates(piece), coordinates))) {
-                        replacePiece(Parser.convertCoordinatesToMove(board.getPieceCoordinates(piece), coordinates));
-                        if (checkMovement()) {
-                            deletePieceFromNextPosition(Parser.convertCoordinatesToMove(board.getPieceCoordinates(piece), coordinates));
-                            return false;
-                        }
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
-    public boolean isStaleMate() {
-        LinkedList<Piece> linkedList;
-        if (colourGameChange.isWhite()) {
-            linkedList = whitePieces;
-        } else {
-            linkedList = blackPieces;
-        }
-        for (int i = 0; i < Board.PIECE_BOARD_SIZE; i++) {
-            for (int j = 0; j < Board.PIECE_BOARD_SIZE; j++) {
-                Coordinates coordinates = new Coordinates(i, j);
-                for (Piece piece : linkedList) {
-                    if (piece.canMoveTo(board.getPieceCoordinates(piece), coordinates) && determineAnyPiecesBetweenMoves(Parser.convertCoordinatesToMove(board.getPieceCoordinates(piece), coordinates))) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
 
     private void moveTo(String move) {
         Coordinates[] coordinates = Parser.parseInput(move);
@@ -454,29 +368,33 @@ public class ChessGame {
             }
             return true;
         } else {
-            int increase=0;
-            int decrease=0;
-            if (coordinates[0].getX() < coordinates[1].getX()) {
+            int increase = 0;
+            int decrease = 0;
+            if (coordinates[0].getX() < coordinates[1].getX()&&coordinates[0].getY() > coordinates[1].getY()) {
                 increase = coordinates[0].getX();
                 xFinish = coordinates[1].getX();
-            } else {
-                decrease = coordinates[1].getX();
-                xFinish = coordinates[0].getX();
-            }
-
-            if (coordinates[0].getY() > coordinates[1].getY()) {
                 decrease = coordinates[0].getY();
+                decrease--;
+                increase++;
+                for (;increase < xFinish; decrease--, increase++) {
+                    if (board.getBoard()[increase][decrease]  != null) {
+                        return false;
+                    }
+                }
+                return true;
             } else {
                 increase = coordinates[1].getY();
-            }
-            decrease--;
-            increase++;
-            for(;decrease>xFinish|| increase<xFinish;decrease--,increase++){
-                if(board.getPieceAt(increase, decrease) != null){
-                    return false;
+                decrease = coordinates[1].getX();
+                xFinish = coordinates[0].getX();
+                decrease--;
+                increase++;
+                for (;decrease > xFinish; decrease--, increase++) {
+                    if (board.getBoard()[decrease][increase]  != null) {
+                        return false;
+                    }
                 }
+                return true;
             }
-            return true;
         }
     }
 
